@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { ConnectToDB } = require("./config/db");
+const { authRouter } = require("./routes/user.routes");
 
 const app = express();
 app.use(cors());
@@ -16,7 +17,7 @@ app.get("/", (req, res) => {
   }
 });
 
-
+app.use("/user",authRouter)
 app.listen(PORT, async () => {
   try {
     await ConnectToDB();

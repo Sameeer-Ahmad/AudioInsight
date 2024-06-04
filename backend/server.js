@@ -9,20 +9,13 @@ require("dotenv").config();
 const PORT = process.env.PORT;
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  try {
-    res.send("Vocal Vision AI Backend Server");
-  } catch (err) {
-    console.log(err);
-  }
-});
+app.use("/user", authRouter);
 
-app.use("/user",authRouter)
 app.listen(PORT, async () => {
   try {
     await ConnectToDB();
     console.log(`server is running on port ${PORT}`);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
 });

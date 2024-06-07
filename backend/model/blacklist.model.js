@@ -9,4 +9,4 @@ const blackList = sequelize.define(
   { timestamps: true }
 );
 
-module.exports={blackList};
+module.exports = { blackList };

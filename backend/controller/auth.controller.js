@@ -4,7 +4,6 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../model/user.model");
 const { blackList } = require("../model/blacklist.model");
 
-
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
   try {
@@ -25,7 +24,6 @@ const signup = async (req, res) => {
   }
 };
 
-
 const login = async (req, res) => {
   const { email, password } = req.body;
   if ((!email, !password)) {
@@ -43,7 +41,7 @@ const login = async (req, res) => {
           data: { email: isUserExists.email },
         },
         process.env.SECRET_KEY,
-        { expiresIn: "1h" }
+        { expiresIn: "8h" }
       );
       return res.status(201).send(accessToken);
     }
@@ -54,22 +52,22 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-    const header = req.headers["authorization"];
-    const token = header.split(" ")[1];
-    try {
-      if (!token) {
-        res.status(401).send("token not provided");
-      }
-      const userToken = new blackList({ token });
-      await userToken.save();
-      return res.status(201).send("user logout successfully");
-    } catch (err) {
-      res.status(400).send(err);
+  const header = req.headers["authorization"];
+  const token = header.split(" ")[1];
+  try {
+    if (!token) {
+      res.status(401).send("token not provided");
     }
-  };
+    const userToken = new blackList({ token });
+    await userToken.save();
+    return res.status(201).send("user logout successfully");
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 
 module.exports = {
   signup,
   login,
-  logout
+  logout,
 };

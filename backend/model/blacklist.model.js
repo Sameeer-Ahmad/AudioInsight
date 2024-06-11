@@ -1,12 +1,10 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 
-const blackList = sequelize.define(
-  "blacklist",
-  {
-    token: { type: DataTypes.STRING, allowNull: false },
-  },
-  { timestamps: true }
-);
+const Blacklist = sequelize.define("Blacklist", {
+  token: { type: DataTypes.STRING, allowNull: false },
+  createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+  updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
+}, { timestamps: false });
 
-module.exports = { blackList };
+module.exports = { Blacklist };

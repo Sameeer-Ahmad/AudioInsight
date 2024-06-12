@@ -15,7 +15,7 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-console.log("decoded", decoded);
+// console.log("decoded", decoded);
 
     const userId = decoded.data.userId;
     const user = await UserModel.findByPk(userId);

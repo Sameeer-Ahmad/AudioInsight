@@ -2,12 +2,39 @@
 const { sequelize } = require("../config/db");
 const { UserModel } = require("./user.model");
 const { AudioProcessingModel } = require("./audioProcessing.model");
+const { TranscriptionModel } = require("./transcribe.model");
+const { SummaryModel } = require("./summary.model");
 
 UserModel.hasMany(AudioProcessingModel, {
   foreignKey: "userId",
   onDelete: "CASCADE",
 });
 AudioProcessingModel.belongsTo(UserModel, { foreignKey: "userId" });
+
+AudioProcessingModel.hasMany(TranscriptionModel, {
+  foreignKey: "audioProcessingId",
+  onDelete: "CASCADE",
+});
+TranscriptionModel.belongsTo(AudioProcessingModel, {
+  foreignKey: "audioProcessingId",
+});
+
+AudioProcessingModel.hasMany(SummaryModel, {
+  // Define the relationship
+  foreignKey: "audioProcessingId",
+  onDelete: "CASCADE",
+});
+SummaryModel.belongsTo(AudioProcessingModel, {
+  foreignKey: "audioProcessingId",
+});
+
+AudioProcessingModel.hasMany(SpeakerModel, {
+  foreignKey: "audioProcessingId",
+  onDelete: "CASCADE",
+});
+SpeakerModel.belongsTo(AudioProcessingModel, {
+  foreignKey: "audioProcessingId",
+});
 
 // Sync models with the database
 sequelize.sync({ force: false }).then(() => {
@@ -17,4 +44,7 @@ sequelize.sync({ force: false }).then(() => {
 module.exports = {
   UserModel,
   AudioProcessingModel,
+  TranscriptionModel,
+  SummaryModel,
+  SpeakerModel,
 };

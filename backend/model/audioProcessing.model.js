@@ -8,13 +8,18 @@ const AudioProcessingModel = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "Users", 
+        model: "Users",
         key: "id",
       },
     },
     mediaFileUrl: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    transcription: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+
     },
     createdAt: {
       type: DataTypes.DATE,

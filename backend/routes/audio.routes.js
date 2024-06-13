@@ -10,7 +10,7 @@ const summarizeRouter = express.Router();
 const diarizeRouter = express.Router();
 audioRouter.post("/upload", upload, audioUpload);
 
-transcribeRouter.post("/transcribe/:id", transcribe);
+transcribeRouter.get("/transcribe/:id", transcribe);
 
 summarizeRouter.post("/summarize/:id", summarize);
 

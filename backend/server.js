@@ -15,7 +15,9 @@ app.use(express.json());
 
 app.use("/user", authRouter);
 app.use("/audio", authMiddleware, audioRouter,transcribeRouter,summarizeRouter,diarizeRouter);
-
+app.get("/",(req,res)=>{
+  res.send("welcome to audio-Isngiht")
+})
 app.listen(PORT, async () => {
   try {
     await ConnectToDB();

@@ -44,7 +44,7 @@ const login = async (req, res) => {
           data: { userId: user.id,email:user.email},
         },
         process.env.SECRET_KEY,
-        { expiresIn: "12h" }
+        { expiresIn: "8h" }
       );
       return res.status(200).send({ message: "Login successful", accessToken });
     }

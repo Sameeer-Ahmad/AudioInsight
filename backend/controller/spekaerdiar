@@ -1,0 +1,108 @@
+const { AudioProcessingModel } = require("../model/audioProcessing.model");
+require("dotenv").config();
+const { SpeechClient } = require("@google-cloud/speech");
+const { SpeakerModel } = require("../model/speakerDiarization.model");
+const client = new SpeechClient();
+const fs = require('fs');
+const diarize = async function diarize(req, res) {
+    try {
+        // Transcribe the local audio file with speaker diarization
+        const speakerDiarizationResults = await transcribeWithSpeakerDiarizationLocal();
+        console.log("speaker diarization results", speakerDiarizationResults);
+
+        // Extract speaker information from the transcription results
+        const speakers = extractSpeakerInformation(speakerDiarizationResults);
+        console.log("speakers", speakers);
+
+        // Store the speaker information in the database
+        // await SpeakerModel.bulkCreate(speakers.map(speaker => ({
+        //     audioProcessingId: audioProcessingId,
+        //     speakerId: speaker.speakerId,
+        //     speakerName: speaker.speakerName,
+        //     startTime: speaker.startTime,
+        //     endTime: speaker.endTime,
+        //     spokenText: speaker.spokenText,
+        // })));
+
+        res.json({ message: 'Speaker diarization completed', speakers });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred during speaker diarization' });
+    }
+}
+
+
+
+async function transcribeWithSpeakerDiarizationLocal() {
+    const config = {
+        encoding: 'LINEAR16',
+        sampleRateHertz: 16000,
+        languageCode: 'en-US',
+        enableSpeakerDiarization: true,
+        diarizationSpeakerCount: 2,
+    };
+
+    const audio = {
+        content: fs.readFileSync('../Disney.mp3').toString('base64'),
+    };
+
+    const request = {
+        audio: audio,
+        config: config,
+    };
+
+    const [response] = await client.recognize(request);
+    console.log("result -->  ", response.results);
+    return response.results;
+}
+function extractSpeakerInformation(results) {
+    let speakers = [];
+    let currentSpeakerId = -1;
+    let currentSpeakerName = null;
+    let currentStartTime = 0;
+
+    for (const result of results) {
+        const speakerTag = result.alternatives[0].words[0].speakerTag;
+        console.log(" speaker-", speaker);
+        const word = result.alternatives[0].transcript;
+
+        if (speakerTag !== currentSpeakerId) {
+            if (currentSpeakerId !== -1) {
+                // End of the previous speaker's segment
+                const speaker = {
+                    speakerId: currentSpeakerId,
+                    speakerName: currentSpeakerName,
+                    startTime: currentStartTime,
+                    endTime: result.endTime.seconds,
+                    spokenText: currentSpeakerName ? currentSpeakerName + ": " + currentSpeakerText : currentSpeakerText,
+                };
+                speakers.push(speaker);
+            }
+
+            // Start of a new speaker's segment
+            currentSpeakerId = speakerTag;
+            currentSpeakerName = `Speaker ${currentSpeakerId}`;
+            currentStartTime = result.startTime.seconds;
+            currentSpeakerText = word;
+        } else {
+            // Continuing the current speaker's segment
+            currentSpeakerText += " " + word;
+        }
+    }
+
+    // Add the last speaker's segment
+    if (currentSpeakerId !== -1) {
+        const speaker = {
+            speakerId: currentSpeakerId,
+            speakerName: currentSpeakerName,
+            startTime: currentStartTime,
+            endTime: results[results.length - 1].endTime.seconds,
+            spokenText: currentSpeakerName ? currentSpeakerName + ": " + currentSpeakerText : currentSpeakerText,
+        };
+        speakers.push(speaker);
+    }
+
+    return speakers;
+}
+
+module.exports = { diarize };

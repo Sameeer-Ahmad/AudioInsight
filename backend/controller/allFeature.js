@@ -5,7 +5,10 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { speechToText } = require("../utils/speachToText");
 const { SpeakerModel } = require("../model/speakerDiarization.model");
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
+const axios = require("axios");
+const { SpeechClient } = require("@google-cloud/speech");
 
+const client = new SpeechClient()
 const transcribe =  async (req, res) => {
   try {
     const audioProcessingId = req.params.id;
@@ -73,7 +76,8 @@ async function summarizeText(transcribedText) {
   return summary;
 }
 
-const diarize = async (req, res) => {
+
+const speakerDiarization = async (req, res) => {
   try {
     const audioProcessingId = req.params.id;
 
@@ -86,9 +90,8 @@ const diarize = async (req, res) => {
     }
 
     const audioUrl = audioProcessing.mediaFileUrl;
-    // console.log("audio url",audioUrl);
-    const speakers = await speechToText(audioUrl);
-    console.log("speakers", speakers);
+
+    const speakers = await speechToTexts(audioUrl);
 
     // Save the speakers to the Speakers table
     await SpeakerModel.bulkCreate(
@@ -98,10 +101,7 @@ const diarize = async (req, res) => {
       }))
     );
 
-    res.json({
-      message: "Speaker diarization completed successfully",
-      speakers,
-    });
+    res.json({ message: "Speaker diarization completed successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -110,4 +110,99 @@ const diarize = async (req, res) => {
   }
 };
 
-module.exports = { transcribe, summarize, diarize };
+const speechToTexts = async (audioUrl) => {
+  // Download the audio file from Cloudinary
+  const responses = await axios({
+    url: audioUrl,
+    method: "GET",
+    responseType: "arraybuffer",
+  });
+
+  const audioBuffer = Buffer.from(responses.data);
+
+  // Dynamically import the file-type module
+  const { fileTypeFromBuffer } = await import("file-type");
+  const type = await fileTypeFromBuffer(audioBuffer);
+
+  if (!type) {
+    throw new Error("Unsupported audio format");
+  }
+
+  const audioBytes = audioBuffer.toString("base64");
+
+  let encoding;
+  let sampleRateHertz;
+
+  switch (type.mime) {
+    case "audio/mpeg":
+      encoding = "MP3";
+      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+      break;
+    case "audio/wav":
+      encoding = "LINEAR16";
+      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+      break;
+    case "audio/ogg":
+      encoding = "OGG_OPUS";
+      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+      break;
+    case "audio/flac":
+      encoding = "FLAC";
+      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+      break;
+    case "audio/aac":
+      encoding = "ENCODING_UNSPECIFIED"; // Adjust based on your audio file sample rate
+      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+      break;
+    case "audio/m4a":
+      encoding = "AAC"; // or "AMR" depending on the audio format
+      sampleRateHertz = 48000; // Adjust based on your audio file sample rate
+      break;
+    default:
+      throw new Error("Unsupported audio format");
+  }
+
+  const request = {
+    audio: {
+      content: audioBytes,
+    },
+    config: {
+      encoding,
+      sampleRateHertz,
+      languageCode: "en-US",
+      enableSpeakerDiarization: true, // Enable speaker diarization
+      diarizationSpeakerCount: 2, // Specify the number of speakers
+    },
+  };
+
+  const [operation] = await client.longRunningRecognize(request);
+  const [response] = await operation.promise();
+
+  if (!response.results || response.results.length === 0) {
+    throw new Error("No transcription results found");
+  }
+console.log("response.result",  response.results);
+  const transcriptions = response.results.map((result) => {
+    if (result.alternatives && result.alternatives.length > 0) {
+      return {
+        // startTime: result.alternatives[0].words[0].startTime.seconds,
+        // endTime:
+        //   result.alternatives[0].words[
+        //     result.alternatives[0].words.length - 1
+        //   ].endTime.seconds,
+        speakerId: result.alternatives[0].speakerTag,
+        spokenText: result.alternatives[0].transcript,
+      };
+    } else {
+      // Handle the case where alternatives array is empty
+      return null;
+    }
+  }).filter(Boolean); // Filter out null values
+console.log("trancription",transcriptions);
+  return transcriptions;
+};
+
+
+
+
+module.exports = { transcribe, summarize, speakerDiarization };

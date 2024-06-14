@@ -1,8 +1,13 @@
 const express = require("express");
 
 const { audioUpload } = require("../controller/AudioProcessing.controller");
-const { transcribe, summarize, diarize } = require("../controller/allFeature");
+const {
+  transcribe,
+  summarize,
+  speakerDiarization,
+} = require("../controller/allFeature");
 const upload = require("../utils/multer");
+const { diarize } = require("../controller/spekaerdiar");
 
 const audioRouter = express.Router();
 const transcribeRouter = express.Router();
@@ -14,5 +19,10 @@ transcribeRouter.get("/transcribe/:id", transcribe);
 
 summarizeRouter.post("/summarize/:id", summarize);
 
-diarizeRouter.post("/diarize/:id", diarize);
-module.exports = { audioRouter, transcribeRouter, summarizeRouter, diarizeRouter };
+diarizeRouter.post("/diarize/:id", speakerDiarization);
+module.exports = {
+  audioRouter,
+  transcribeRouter,
+  summarizeRouter,
+  diarizeRouter,
+};

@@ -1,8 +1,8 @@
-// speakers.model.js
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../config/db");
 const { AudioProcessingModel } = require("./audioProcessing.model");
 
+// Speaker model
 const SpeakerModel = sequelize.define(
   "Speakers",
   {
@@ -19,10 +19,31 @@ const SpeakerModel = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    speakerName: {
-      type: DataTypes.STRING,
+  },
+  {
+    tableName: "Speakers",
+  }
+);
+
+SpeakerModel.belongsTo(AudioProcessingModel, {
+  foreignKey: "audioProcessingId",
+  onDelete: "CASCADE",
+});
+
+// Speaker segment model
+const SpeakerSegmentModel = sequelize.define(
+  "SpeakerSegments",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    speakerId: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
+   
     startTime: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -37,15 +58,16 @@ const SpeakerModel = sequelize.define(
     },
   },
   {
-    tableName: "Speakers",
+    tableName: "SpeakerSegments",
   }
 );
 
-SpeakerModel.belongsTo(AudioProcessingModel, {
-  foreignKey: "audioProcessingId",
+SpeakerSegmentModel.belongsTo(SpeakerModel, {
+  foreignKey: "speakerId",
   onDelete: "CASCADE",
 });
 
 module.exports = {
   SpeakerModel,
+  SpeakerSegmentModel,
 };

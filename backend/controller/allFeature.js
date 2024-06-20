@@ -1,27 +1,31 @@
 const { AudioProcessingModel } = require("../model/audioProcessing.model");
 const { SummaryModel } = require("../model/summary.model");
 require("dotenv").config();
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const { speechToText } = require("../utils/speachToText");
-const { SpeakerModel } = require("../model/speakerDiarization.model");
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
+
+const {
+  SpeakerModel,
+  SpeakerSegmentModel,
+} = require("../model/speakerDiarization.model");
+
 const axios = require("axios");
-const { SpeechClient } = require("@google-cloud/speech");
+const { summarizeText } = require("../utils/summarizeText");
 
-const client = new SpeechClient()
-const transcribe =  async (req, res) => {
+const { SpeechClient } = require("@google-cloud/speech").v1p1beta1;
+// const fs = require('fs');
+const client = new SpeechClient();
+
+const transcribe = async (req, res) => {
   try {
-    const audioProcessingId = req.params.id;
+    const latestAudio = await AudioProcessingModel.findOne({
+      order: [["createdAt", "DESC"]],
+    });
 
-    // Find the audio processing entry for the given audioProcessingId
-    const audioProcessing = await AudioProcessingModel.findByPk(audioProcessingId);
-
-    if (!audioProcessing) {
-      return res.status(404).json({ message: "Audio processing entry not found" });
+    if (!latestAudio) {
+      return res.status(404).json({ message: "No audio found" });
     }
 
-    // Return the transcription from the audio processing entry
-    return res.status(200).json({ transcription: audioProcessing.transcription });
+    // Return the transcription from the latest audio processing entry
+    return res.status(200).json({ transcription: latestAudio.transcription });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error retrieving transcription" });
@@ -30,25 +34,23 @@ const transcribe =  async (req, res) => {
 
 const summarize = async (req, res) => {
   try {
-    const audioProcessingId = req.params.id;
+    const latestAudio = await AudioProcessingModel.findOne({
+      order: [["createdAt", "DESC"]],
+    });
 
-    // Fetch the audio processing entry for the given audioProcessingId
-    const audioProcessing = await AudioProcessingModel.findByPk(
-      audioProcessingId
-    );
-    if (!audioProcessing) {
+    if (!latestAudio) {
       return res.status(404).json({ error: "Audio not found" });
     }
 
     // Use the stored transcription for summarization
-    const transcription = audioProcessing.transcription;
+    const transcription = latestAudio.transcription;
 
-    // Generate summary
+    // Generating the summary
     const summary = await summarizeText(transcription);
 
-    // Store the summary in the database
+    // Storing the summary in the database
     const newSummary = await SummaryModel.create({
-      audioProcessingId,
+      audioProcessingId: latestAudio.id,
       summary,
     });
 
@@ -60,22 +62,6 @@ const summarize = async (req, res) => {
     });
   }
 };
-
-
-async function summarizeText(transcribedText) {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-  const result = await model.generateContent(
-    `Create a small well-summary for the following text then in new line after the space in row add original length and summary length and text for summary length and original length only in bold:
-  ${transcribedText}`
-  );
-  const response = await result.response;
-  let summary = response.text().trim();
-  //   summary = summary.replace(/\n/g, "");
-  // console.log(summary);
-  return summary;
-}
-
 
 const speakerDiarization = async (req, res) => {
   try {
@@ -90,18 +76,38 @@ const speakerDiarization = async (req, res) => {
     }
 
     const audioUrl = audioProcessing.mediaFileUrl;
+    console.log("audioUrl", audioUrl);
 
     const speakers = await speechToTexts(audioUrl);
+    console.log("speakers", speakers);
 
-    // Save the speakers to the Speakers table
-    await SpeakerModel.bulkCreate(
-      speakers.map((speaker) => ({
-        ...speaker,
+    // Save the speakers to the Speakers table and their segments to the SpeakerSegments table
+    const speakerPromises = speakers.map(async (speaker) => {
+      // Save the speaker info
+      const savedSpeaker = await SpeakerModel.create({
         audioProcessingId,
-      }))
-    );
+        speakerId: speaker.speakerId,
+      });
 
-    res.json({ message: "Speaker diarization completed successfully" });
+      // Save the speaker segments
+      const segmentPromises = speaker.segments.map((segment) => {
+        return SpeakerSegmentModel.create({
+          speakerId: savedSpeaker.id,
+          startTime: segment.startTime,
+          endTime: segment.endTime,
+          spokenText: segment.spokenText,
+        });
+      });
+
+      return Promise.all(segmentPromises);
+    });
+
+    await Promise.all(speakerPromises);
+
+    res.json({
+      message: "Speaker diarization completed successfully",
+      speakers,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -111,98 +117,128 @@ const speakerDiarization = async (req, res) => {
 };
 
 const speechToTexts = async (audioUrl) => {
-  // Download the audio file from Cloudinary
-  const responses = await axios({
-    url: audioUrl,
-    method: "GET",
-    responseType: "arraybuffer",
-  });
+  try {
+    // Download the audio file from the given URL
+    const responses = await axios.get(audioUrl, {
+      responseType: "arraybuffer",
+    });
+    const audioBuffer = Buffer.from(responses.data);
 
-  const audioBuffer = Buffer.from(responses.data);
+    // Determine the file type
+    const { fileTypeFromBuffer } = await import("file-type");
+    const type = await fileTypeFromBuffer(audioBuffer);
 
-  // Dynamically import the file-type module
-  const { fileTypeFromBuffer } = await import("file-type");
-  const type = await fileTypeFromBuffer(audioBuffer);
-
-  if (!type) {
-    throw new Error("Unsupported audio format");
-  }
-
-  const audioBytes = audioBuffer.toString("base64");
-
-  let encoding;
-  let sampleRateHertz;
-
-  switch (type.mime) {
-    case "audio/mpeg":
-      encoding = "MP3";
-      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-      break;
-    case "audio/wav":
-      encoding = "LINEAR16";
-      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-      break;
-    case "audio/ogg":
-      encoding = "OGG_OPUS";
-      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-      break;
-    case "audio/flac":
-      encoding = "FLAC";
-      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-      break;
-    case "audio/aac":
-      encoding = "ENCODING_UNSPECIFIED"; // Adjust based on your audio file sample rate
-      sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-      break;
-    case "audio/m4a":
-      encoding = "AAC"; // or "AMR" depending on the audio format
-      sampleRateHertz = 48000; // Adjust based on your audio file sample rate
-      break;
-    default:
+    if (!type) {
       throw new Error("Unsupported audio format");
-  }
-
-  const request = {
-    audio: {
-      content: audioBytes,
-    },
-    config: {
-      encoding,
-      sampleRateHertz,
-      languageCode: "en-US",
-      enableSpeakerDiarization: true, // Enable speaker diarization
-      diarizationSpeakerCount: 2, // Specify the number of speakers
-    },
-  };
-
-  const [operation] = await client.longRunningRecognize(request);
-  const [response] = await operation.promise();
-
-  if (!response.results || response.results.length === 0) {
-    throw new Error("No transcription results found");
-  }
-console.log("response.result",  response.results);
-  const transcriptions = response.results.map((result) => {
-    if (result.alternatives && result.alternatives.length > 0) {
-      return {
-        // startTime: result.alternatives[0].words[0].startTime.seconds,
-        // endTime:
-        //   result.alternatives[0].words[
-        //     result.alternatives[0].words.length - 1
-        //   ].endTime.seconds,
-        speakerId: result.alternatives[0].speakerTag,
-        spokenText: result.alternatives[0].transcript,
-      };
-    } else {
-      // Handle the case where alternatives array is empty
-      return null;
     }
-  }).filter(Boolean); // Filter out null values
-console.log("trancription",transcriptions);
-  return transcriptions;
+
+    const audioBytes = audioBuffer.toString("base64");
+
+    let encoding;
+    let sampleRateHertz;
+
+    switch (type.mime) {
+      case "audio/mpeg":
+        encoding = "MP3";
+        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+        break;
+      case "audio/wav":
+        encoding = "LINEAR16";
+        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+        break;
+      case "audio/ogg":
+        encoding = "OGG_OPUS";
+        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+        break;
+      case "audio/flac":
+        encoding = "FLAC";
+        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+        break;
+      case "audio/aac":
+        encoding = "ENCODING_UNSPECIFIED"; // Adjust based on your audio file sample rate
+        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
+        break;
+      case "audio/m4a":
+        encoding = "AAC"; // or "AMR" depending on the audio format
+        sampleRateHertz = 48000; // Adjust based on your audio file sample rate
+        break;
+      default:
+        throw new Error("Unsupported audio format");
+    }
+
+    const request = {
+      audio: {
+        content: audioBytes,
+      },
+      config: {
+        encoding,
+        sampleRateHertz,
+        languageCode: "en-US",
+        enableSpeakerDiarization: true, // Enable speaker diarization
+        diarizationSpeakerCount: 2, // Specify the number of speakers
+      },
+    };
+
+    const [response] = await client.recognize(request);
+    console.log("response.results", response.results);
+
+    const speakers = [];
+    const speakerSegments = {};
+
+    response.results.forEach((result) => {
+      result.alternatives.forEach((alternative) => {
+        alternative.words.forEach((wordInfo) => {
+          const speakerTag = wordInfo.speakerTag;
+          if (!speakerSegments[speakerTag]) {
+            speakerSegments[speakerTag] = [];
+          }
+          speakerSegments[speakerTag].push({
+            startTime:
+              wordInfo.startTime.seconds + wordInfo.startTime.nanos / 1e9,
+            endTime: wordInfo.endTime.seconds + wordInfo.endTime.nanos / 1e9,
+            spokenText: wordInfo.word,
+          });
+        });
+      });
+    });
+
+    for (const [speakerId, segments] of Object.entries(speakerSegments)) {
+      const spokenText = segments
+        .map((segment) => segment.spokenText)
+        .join(" ");
+      speakers.push({
+        speakerId,
+        segments: [
+          {
+            startTime: segments[0].startTime,
+            endTime: segments[segments.length - 1].endTime,
+            spokenText,
+          },
+        ],
+      });
+    }
+
+    console.log("transcriptions", speakers);
+    return speakers;
+  } catch (error) {
+    console.error("Error in speechToTexts:", error.message);
+    throw error;
+  }
 };
 
+const latestAudio = async (req, res) => {
+  try {
+    const latestAudio = await AudioProcessingModel.findOne({
+      order: [["createdAt", "DESC"]],
+    });
+    if (latestAudio) {
+      res.json({ audioId: latestAudio.id });
+    } else {
+      res.status(404).json({ message: "No audio found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
 
-
-
-module.exports = { transcribe, summarize, speakerDiarization };
+module.exports = { transcribe, summarize, speakerDiarization, latestAudio };

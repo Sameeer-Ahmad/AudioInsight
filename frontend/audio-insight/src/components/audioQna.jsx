@@ -23,7 +23,7 @@ const AudioQna = () => {
     }
     
   };
-
+  
   useEffect(() => {
     if (socket) {
       socket.on('receiveMessage', (data) => {

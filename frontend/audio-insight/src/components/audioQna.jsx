@@ -17,7 +17,6 @@ const AudioQna = () => {
         setQaHistory([ { question, answer: data.answer },...qaHistory]);
         setQuestion('');
       });
-
       socket.on('error', (message) => {
         console.error('Error:', message);
       });

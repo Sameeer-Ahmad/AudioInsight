@@ -1,8 +1,6 @@
-
 const { AudioProcessingModel } = require("../model/audioProcessing.model");
 const { cloudinaryUploader } = require("../utils/cloudinaryUploads");
 const { speechToText } = require("../utils/speachToText");
-
 
 const audioUpload = async (req, res) => {
   if (req.fileValidationError) {
@@ -14,15 +12,15 @@ const audioUpload = async (req, res) => {
   try {
     // Upload the audio to Cloudinary
     const audioResponse = await cloudinaryUploader(req, res);
- console.log("audio response",audioResponse);
+    console.log("audio response", audioResponse);
     // Transcribe the audio
     const transcriptionResponse = await speechToText(audioResponse.secure_url);
-console.log("transcription response",transcriptionResponse);
+    console.log("transcription response", transcriptionResponse);
     // Save the audio URL and transcription in the database
     const audioProcessing = await AudioProcessingModel.create({
       userId: req.user.id,
       mediaFileUrl: audioResponse.secure_url,
-      transcription: transcriptionResponse ,
+      transcription: transcriptionResponse,
     });
 
     return res.status(200).json({
@@ -36,7 +34,6 @@ console.log("transcription response",transcriptionResponse);
 };
 
 module.exports = { audioUpload };
-
 
 // const multer = require("multer");
 // const cloudinary = require("cloudinary").v2;
@@ -76,8 +73,8 @@ module.exports = { audioUpload };
 //         const duration = info.format.duration;
 //         return promisify(
 //           ffmpeg(file.path)
-//             .outputOptions("-vn") 
-//             .outputOptions("-acodec libmp3lame") 
+//             .outputOptions("-vn")
+//             .outputOptions("-acodec libmp3lame")
 //             .output(audioPath)
 //             .on("end", async () => {
 //               // Upload the audio file to Cloudinary

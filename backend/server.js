@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 const cors = require("cors");
 const http = require("http");
 const { ConnectToDB } = require("./config/db");
@@ -25,12 +25,9 @@ const {
   transcribeRouter,
   summarizeRouter,
   diarizeRouter,
-  latestRouter,
 } = require("./routes/audio.routes");
 
-
 require("events").EventEmitter.defaultMaxListeners = 20;
-
 
 app.use("/user", authRouter);
 app.use(
@@ -40,9 +37,8 @@ app.use(
   transcribeRouter,
   summarizeRouter,
   diarizeRouter
-  // latestRouter
 );
-app.use("/audios", latestRouter);
+
 app.get("/", (req, res) => {
   res.send("Welcome to Audio-Insight");
 });
@@ -57,3 +53,5 @@ server.listen(PORT, async () => {
     console.log(err);
   }
 });
+
+

@@ -1,21 +1,28 @@
 const { AudioProcessingModel } = require("../model/audioProcessing.model");
 const { SummaryModel } = require("../model/summary.model");
 require("dotenv").config();
-
+const axios = require("axios");
 const {
   SpeakerModel,
   SpeakerSegmentModel,
 } = require("../model/speakerDiarization.model");
 
-const axios = require("axios");
+
 const { summarizeText } = require("../utils/summarizeText");
 
 const { SpeechClient } = require("@google-cloud/speech").v1p1beta1;
-// const fs = require('fs');
+
 const client = new SpeechClient();
+
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
+
 
 const transcribe = async (req, res) => {
   try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const { language } = req.query;
     const latestAudio = await AudioProcessingModel.findOne({
       order: [["createdAt", "DESC"]],
     });
@@ -24,8 +31,15 @@ const transcribe = async (req, res) => {
       return res.status(404).json({ message: "No audio found" });
     }
 
-    // Return the transcription from the latest audio processing entry
-    return res.status(200).json({ transcription: latestAudio.transcription });
+    let prompt = `Translate the following transcription to ${language}: "${latestAudio.transcription}"`;
+
+    const result = await model.generateContent([prompt]);
+    const transcription = result.response
+      .text()
+      .replace(/(\r\n|\n|\r|\\)/gm, " ")
+      .trim();
+
+    return res.status(200).json({ transcription });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Error retrieving transcription" });
@@ -34,6 +48,7 @@ const transcribe = async (req, res) => {
 
 const summarize = async (req, res) => {
   try {
+    const { language } = req.query; // Get the language parameter from query
     const latestAudio = await AudioProcessingModel.findOne({
       order: [["createdAt", "DESC"]],
     });
@@ -42,16 +57,16 @@ const summarize = async (req, res) => {
       return res.status(404).json({ error: "Audio not found" });
     }
 
-    // Use the stored transcription for summarization
     const transcription = latestAudio.transcription;
 
-    // Generating the summary
-    const summary = await summarizeText(transcription);
+    // Generate the summary in the specified language
+    const summary = await summarizeText(transcription, language);
 
-    // Storing the summary in the database
+    // Store the summary and its language in the database
     const newSummary = await SummaryModel.create({
       audioProcessingId: latestAudio.id,
       summary,
+      language,
     });
 
     res.json(newSummary);
@@ -62,6 +77,7 @@ const summarize = async (req, res) => {
     });
   }
 };
+
 
 const speakerDiarization = async (req, res) => {
   try {
@@ -226,19 +242,4 @@ const speechToTexts = async (audioUrl) => {
   }
 };
 
-const latestAudio = async (req, res) => {
-  try {
-    const latestAudio = await AudioProcessingModel.findOne({
-      order: [["createdAt", "DESC"]],
-    });
-    if (latestAudio) {
-      res.json({ audioId: latestAudio.id });
-    } else {
-      res.status(404).json({ message: "No audio found" });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
-};
-
-module.exports = { transcribe, summarize, speakerDiarization, latestAudio };
+module.exports = { transcribe, summarize, speakerDiarization };

@@ -2,7 +2,6 @@
 import  { useState, useEffect } from 'react';
 import useSocket from '../hooks/useSocket';
 
-
 const AudioQna = () => {
   const socket = useSocket();
   const [question, setQuestion] = useState('');

@@ -35,9 +35,7 @@ const login = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ error: "Please provide email and password" });
   }
-
   try {
-    
     const user = await UserModel.findOne({ where: { email } });
 
     if (!user) {

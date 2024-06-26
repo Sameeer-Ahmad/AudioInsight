@@ -20,7 +20,7 @@ transcribeRouter.get("/transcribe", transcribe);
 
 summarizeRouter.get("/summary", summarize);
 
-diarizeRouter.post("/diarize/:id", speakerDiarization);
+diarizeRouter.post("/diarize", speakerDiarization);
 
 module.exports = {
   audioRouter,

@@ -18,7 +18,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 
-
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 const transcribe = async (req, res) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -79,14 +79,15 @@ const summarize = async (req, res) => {
 };
 
 
+
 const speakerDiarization = async (req, res) => {
   try {
-    const audioProcessingId = req.params.id;
+    
 
     // Fetch the audio URL from the AudioProcessing table
-    const audioProcessing = await AudioProcessingModel.findByPk(
-      audioProcessingId
-    );
+    const audioProcessing = await AudioProcessingModel.findOne({
+      order: [["createdAt", "DESC"]],
+    });
     if (!audioProcessing) {
       return res.status(404).json({ error: "Audio not found" });
     }
@@ -94,36 +95,25 @@ const speakerDiarization = async (req, res) => {
     const audioUrl = audioProcessing.mediaFileUrl;
     console.log("audioUrl", audioUrl);
 
-    const speakers = await speechToTexts(audioUrl);
-    console.log("speakers", speakers);
+    // Fetch the latest transcription
+    const transcription = audioProcessing.transcription;
+    if (!transcription) {
+      return res.status(404).json({ error: "Transcription not found" });
+    }
 
-    // Save the speakers to the Speakers table and their segments to the SpeakerSegments table
-    const speakerPromises = speakers.map(async (speaker) => {
-      // Save the speaker info
-      const savedSpeaker = await SpeakerModel.create({
-        audioProcessingId,
-        speakerId: speaker.speakerId,
-      });
+    // Create a prompt for speaker diarization
+    const prompt =  `Analyze the following transcription and provide speaker diarization in the format "Speaker 1: ...", "Speaker 2: ...":
+    "${transcription}"`;
 
-      // Save the speaker segments
-      const segmentPromises = speaker.segments.map((segment) => {
-        return SpeakerSegmentModel.create({
-          speakerId: savedSpeaker.id,
-          startTime: segment.startTime,
-          endTime: segment.endTime,
-          spokenText: segment.spokenText,
-        });
-      });
+    // Use Gemini AI to generate speaker diarization
+    const result = await model.generateContent([prompt]);
+    const diarization = result.response.text();
 
-      return Promise.all(segmentPromises);
-    });
+    // Optionally, update the audio processing record with the diarization result
+    // await AudioProcessingModel.update({ diarization }, { where: { id: audioProcessingId } });
 
-    await Promise.all(speakerPromises);
-
-    res.json({
-      message: "Speaker diarization completed successfully",
-      speakers,
-    });
+    // Return the result
+    res.status(200).json({ transcribedText: transcription, diarization: diarization });
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -132,114 +122,6 @@ const speakerDiarization = async (req, res) => {
   }
 };
 
-const speechToTexts = async (audioUrl) => {
-  try {
-    // Download the audio file from the given URL
-    const responses = await axios.get(audioUrl, {
-      responseType: "arraybuffer",
-    });
-    const audioBuffer = Buffer.from(responses.data);
 
-    // Determine the file type
-    const { fileTypeFromBuffer } = await import("file-type");
-    const type = await fileTypeFromBuffer(audioBuffer);
-
-    if (!type) {
-      throw new Error("Unsupported audio format");
-    }
-
-    const audioBytes = audioBuffer.toString("base64");
-
-    let encoding;
-    let sampleRateHertz;
-
-    switch (type.mime) {
-      case "audio/mpeg":
-        encoding = "MP3";
-        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-        break;
-      case "audio/wav":
-        encoding = "LINEAR16";
-        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-        break;
-      case "audio/ogg":
-        encoding = "OGG_OPUS";
-        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-        break;
-      case "audio/flac":
-        encoding = "FLAC";
-        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-        break;
-      case "audio/aac":
-        encoding = "ENCODING_UNSPECIFIED"; // Adjust based on your audio file sample rate
-        sampleRateHertz = 16000; // Adjust based on your audio file sample rate
-        break;
-      case "audio/m4a":
-        encoding = "AAC"; // or "AMR" depending on the audio format
-        sampleRateHertz = 48000; // Adjust based on your audio file sample rate
-        break;
-      default:
-        throw new Error("Unsupported audio format");
-    }
-
-    const request = {
-      audio: {
-        content: audioBytes,
-      },
-      config: {
-        encoding,
-        sampleRateHertz,
-        languageCode: "en-US",
-        enableSpeakerDiarization: true, // Enable speaker diarization
-        diarizationSpeakerCount: 2, // Specify the number of speakers
-      },
-    };
-
-    const [response] = await client.recognize(request);
-    console.log("response.results", response.results);
-
-    const speakers = [];
-    const speakerSegments = {};
-
-    response.results.forEach((result) => {
-      result.alternatives.forEach((alternative) => {
-        alternative.words.forEach((wordInfo) => {
-          const speakerTag = wordInfo.speakerTag;
-          if (!speakerSegments[speakerTag]) {
-            speakerSegments[speakerTag] = [];
-          }
-          speakerSegments[speakerTag].push({
-            startTime:
-              wordInfo.startTime.seconds + wordInfo.startTime.nanos / 1e9,
-            endTime: wordInfo.endTime.seconds + wordInfo.endTime.nanos / 1e9,
-            spokenText: wordInfo.word,
-          });
-        });
-      });
-    });
-
-    for (const [speakerId, segments] of Object.entries(speakerSegments)) {
-      const spokenText = segments
-        .map((segment) => segment.spokenText)
-        .join(" ");
-      speakers.push({
-        speakerId,
-        segments: [
-          {
-            startTime: segments[0].startTime,
-            endTime: segments[segments.length - 1].endTime,
-            spokenText,
-          },
-        ],
-      });
-    }
-
-    console.log("transcriptions", speakers);
-    return speakers;
-  } catch (error) {
-    console.error("Error in speechToTexts:", error.message);
-    throw error;
-  }
-};
 
 module.exports = { transcribe, summarize, speakerDiarization };

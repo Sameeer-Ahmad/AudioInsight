@@ -1,7 +1,8 @@
 const axios = require("axios");
 const { SpeechClient } = require("@google-cloud/speech");
+require("dotenv").config();
+const client = new SpeechClient({keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS});
 
-const client = new SpeechClient();
 
 const speechToText = async (audioUrl) => {
   // Download the audio file from Cloudinary

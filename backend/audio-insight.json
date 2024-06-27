@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "tensile-method-424715-a9",
+  "private_key_id": "14ecc298bed8690ccf27888c1a9e658cd35fdb4f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCcu+4I0OtUC9nh\n4PNvezXUDF9bxnRTzUyNQ+LNAzuJ1CYLwKBslfmdEfH2n6WJFonxJxZgANtgF4Xf\nRXhGpUWGedb9Q+6UWxKuPy/q6OCzGtF7YMj60ofao5NizTiAcMJbcqtb0dxA3LPs\nS7gm/dz4sLI0eDao9alYld+CxiywBAXj4N0tHWcUwFyVbKOzrCI2+EQBf+/Ad75+\nWSYGJFlWGV90Xi3FUizerm4kXLQ/YZHaiZIRtSE6UO3UhOXCG70GLOMd2Dqa3QqH\nbheHIFXqE7qzkSk2ouZMWwJqJhOnA2hEXaeM0Iv3CxWHbfosi/m6NDnFfO2cco91\n9Zs0tnQBAgMBAAECggEAAndVvRj5QVuxlF0WkRmxmyImtF1gomdUkQeq0rb+Tm9I\n7Ss2wWUKuTuTDXv6ZGtqXqHS0RsYvvmGLbrJTbNECMpzmFowfHBPNvBF/L6ohA9X\nKuEDyI6PfK0306vCLwmXK7RkmQ+p4fHKRimOC28EwkgyRaKumX7KdcGSwFs5HZV5\nHcNHnjlnaG0CB1lHN2zpuKLwhc8yEIdllhsEbfbvBeHDpyk/4ZEmWKIaAijfa5Ed\nIHDiAFhtymSI4L6gOvtgqV88oMmWNOLQxOcQDFCvEVaMr5l+/Gx4bKJsftDJAU8E\ndf+eXM1ZzfgbTWgr7SkzWcG0vmIMaYN99Nn8AFefkQKBgQDMgJKs0T/FKXpqfBYi\nsDwAi4PoiLJRORKUV1LLMeNtZ2FsmWPXz2mQrw2gAyr/PitHQd0Vw9CbFt48NNKI\nMVzN+57io+KreWZQ85EipLSbdCOPRhvbzNzUSk+Tktq4lhxVrfM0VYdu4THxG7ZS\npl1Agp9BAmRQDe/gl6rtJYnW+wKBgQDEM/CAnlfEBZWSe2vpgLmHXgigALfN3WzI\nQ97/bSNIelcL2So9CB9yPDpECQsu1pQPBswNk2V7tNgpqPSn11jwpH9ni65PwhQ0\nL5wspd0V6YVqDMravVJ4nD+VdakkIPviRfYtZtKxz0RFaRFKcgrZDc+7xMlGR6H+\n0f40VV/gMwKBgEyD+t1QeaTCjTwUa4/VEs49ZUB3DQkY6pu4RJEkfGyt1qT0i4fu\n4hexd86cANV5pGXH/fmrx3yPxN0QAonUtl2XvO4d1azFAoRdbbthlvXnMXrlB31p\nHGMN3tJfixivibCBIlM9gSv6dF47OS+ZcaC2fvGq/G97l3oYJWsPtZBLAoGBAJpF\nqMbJOoNkTK6II1rQH5GD6847okrZ3248h7xZyVN09rrXP/ILUAaXuszCO6vRh0ul\ncY7/Jd22Xf2r3uuWVVWqUo9Ncns+RHqgMPGeXY+cNY4kjuCd2poBabGQebVxxfyu\nPBqI7gRnz+uv6KubrlHrHTssSYLcUlE2NuZZdvCnAoGAEJlPkRAMuV/lBUBjv5b4\n7E2p/TF969PyiGgn7sRuKjUhkf5hNNzLEO+6lYPaJsdTeJKBSGtWBMb7PmHj4jjF\nK9aBkq6xtAhWrhhJqXYgAi3/4TPSOgoe39tKwVl9uMKAvdaumGtFPm40IAtiD4Cq\nQ3mV2veLqNaFX2FYVrsc5Xg=\n-----END PRIVATE KEY-----\n",
+  "client_email": "audio-insight@tensile-method-424715-a9.iam.gserviceaccount.com",
+  "client_id": "104051718962712238886",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/audio-insight%40tensile-method-424715-a9.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

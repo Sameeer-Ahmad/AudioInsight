@@ -14,12 +14,13 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: "Token missing from authorization header" });
     }
 
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-// console.log("decoded", decoded);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+console.log("decoded", decoded);
 
-    const userId = decoded.data.userId;
+    const userId = decoded.userId;
+    console.log("userId", userId);
     const user = await UserModel.findByPk(userId);
-   
+   console.log("user", user);
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }

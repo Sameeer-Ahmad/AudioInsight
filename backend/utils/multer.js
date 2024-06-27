@@ -4,10 +4,10 @@ const multer = require("multer");
 const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     let fileExt = file.originalname.split(".").pop();
-
+console.log(" fileExt",fileExt);
     // generate new file name
     const fileName = `${new Date().getTime()}.${fileExt}`;
-
+console.log(" fileName",fileName);
     // callback to use the new file name when storing the uploaded
 
     cb(null, fileName);

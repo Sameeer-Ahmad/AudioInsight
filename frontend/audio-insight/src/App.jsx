@@ -1,16 +1,11 @@
-import React, { useState, useEffect } from 'react';
-
-import AudioQna from './components/audioQna';
+import AllRoutes from "./routes/allRoutes";
 
 function App() {
   return (
     <div>
-      <h1>Audio Insight Q&A</h1>
-      <AudioQna/>
+      <AllRoutes/>
     </div>
   );
 }
 
 export default App;
-
- 

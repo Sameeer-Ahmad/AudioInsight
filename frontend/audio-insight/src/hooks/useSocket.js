@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
+import { API } from '../backend-API/api';
 
 const useSocket = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3001", {
+    const newSocket = io(`${API}`, {
       transports: ['websocket', 'polling'],
     });
 

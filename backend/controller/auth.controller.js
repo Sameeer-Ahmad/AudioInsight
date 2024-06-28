@@ -26,7 +26,7 @@ const signup = async (req, res) => {
   }
 };
 
- const login = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -48,49 +48,18 @@ const signup = async (req, res) => {
 
     // Generate JWT token
     const accessToken = jwt.sign(
-      
-           { userId: user.id,email:user.email},
-        
+      { userId: user.id, email: user.email, username: user.username },
+
       process.env.JWT_SECRET,
       { expiresIn: "12h" }
     );
 
-    return res.status(200).json({ message: "Login successful", accessToken });
+    return res.status(200).json({ message: "Login successful", accessToken ,username:user.username});
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
- 
-// const login = async (req, res) => {
-//   const { email, password } = req.body;
-//   console.log(req.body);
-//   if (!email || !password) {
-//     return res.status(400).send("Please provide email and password");
-//   }
-//   try {
-//     const user = await UserModel.findOne({ email });
-//     if (!user) {
-//       return res.status(404).send("User not found");
-//     }
-//     const isPasswordMatch = await bcrypt.compare(password, user.password);
-//     if (isPasswordMatch) {
-//       const accessToken = jwt.sign(
-//         {
-//           data: { userId: user.id,email:user.email},
-//         },
-//         process.env.SECRET_KEY,
-//         { expiresIn: "8h" }
-//       );
-//       return res.status(200).send({ message: "Login successful", accessToken });
-//     }
-//     return res.status(401).send("Invalid password");
-//   } catch (err) {
-//     console.error(err);
-//     return res.status(500).send("Internal Server Error");
-//   }
-// };
-
 
 const logout = async (req, res) => {
   const header = req.headers["authorization"];

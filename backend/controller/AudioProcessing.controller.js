@@ -12,10 +12,10 @@ const audioUpload = async (req, res) => {
   try {
     // Upload the audio to Cloudinary
     const audioResponse = await cloudinaryUploader(req, res);
-    console.log("audio response", audioResponse);
+   
     // Transcribe the audio
     const transcriptionResponse = await speechToText(audioResponse.secure_url);
-    console.log("transcription response", transcriptionResponse);
+    
     // Save the audio URL and transcription in the database
     const audioProcessing = await AudioProcessingModel.create({
       userId: req.user.id,

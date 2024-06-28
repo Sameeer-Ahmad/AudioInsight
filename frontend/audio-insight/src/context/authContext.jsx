@@ -7,7 +7,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true); // Add loading state
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -30,13 +30,15 @@ const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
-  navigate('/login')
+    navigate("/login");
   };
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout, loading }}>
       {loading ? (
-        <div className="flex justify-center items-center h-screen"><Loading/></div> // Replace with a spinner or loading indicator
+        <div className="flex justify-center items-center h-screen">
+          <Loading />
+        </div> 
       ) : (
         children
       )}

@@ -7,7 +7,7 @@ import { AuthContext } from "../../context/authContext";
 // import { useAuth } from "../../context/authContext";
 function Logout() {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext)
+  const { logout } = useContext(AuthContext);
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -32,7 +32,7 @@ function Logout() {
         localStorage.removeItem("username");
         localStorage.removeItem("uploadSuccess");
         logout();
-console.log("Logout successful");
+        console.log("Logout successful");
         navigate("/login");
       } else {
         console.error("Logout failed:", response.data);

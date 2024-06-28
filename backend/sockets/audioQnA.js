@@ -7,10 +7,10 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 module.exports = (io) => {
   io.on("connection", (socket) => {
-    console.log(`A user connected: ${socket.id}`);
+    // console.log(`A user connected: ${socket.id}`);
 
     socket.on("sendMessage", (data) => {
-      console.log(data);
+      // console.log(data);
       socket.emit("receiveMessage", "Message received!");
     });
 

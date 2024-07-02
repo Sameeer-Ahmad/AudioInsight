@@ -19,6 +19,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
 const transcribe = async (req, res) => {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -27,9 +28,10 @@ const transcribe = async (req, res) => {
       order: [["createdAt", "DESC"]],
     });
 
-    if (!latestAudio) {
-      return res.status(404).json({ message: "No audio found" });
-    }
+   console.log("latestAudio",latestAudio.mediaFileUrl);
+   if (!latestAudio || !latestAudio.mediaFileUrl) {
+    return res.status(404).json({ message: "No audio found" });
+  }
 
     let prompt = `Translate the following transcription to ${language}: "${latestAudio.transcription}"`;
 
@@ -48,7 +50,7 @@ const transcribe = async (req, res) => {
 
 const summarize = async (req, res) => {
   try {
-    const { language } = req.query; // Get the language parameter from query
+    const { language } = req.query; 
     const latestAudio = await AudioProcessingModel.findOne({
       order: [["createdAt", "DESC"]],
     });
@@ -59,7 +61,6 @@ const summarize = async (req, res) => {
 
     const transcription = latestAudio.transcription;
 
-    // Generate the summary in the specified language
     const summary = await summarizeText(transcription, language);
 
     // Store the summary and its language in the database

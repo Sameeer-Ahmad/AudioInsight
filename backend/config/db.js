@@ -9,7 +9,7 @@ async function ConnectToDB() {
   try {
     await sequelize.authenticate();
     console.log("Connection to database has established successfully");
-    await sequelize.sync();
+    // await sequelize.sync();
   } catch (err) {
     console.log("unable to connect");
     console.log(err);

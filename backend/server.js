@@ -32,7 +32,7 @@ require("events").EventEmitter.defaultMaxListeners = 20;
 app.use("/user", authRouter);
 app.use(
   "/audio",
-  authMiddleware,
+  
   audioRouter,
   transcribeRouter,
   summarizeRouter,

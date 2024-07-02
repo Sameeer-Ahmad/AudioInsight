@@ -8,6 +8,7 @@ const {
 } = require("../controller/allFeature");
 
 const upload = require("../utils/multer");
+const authMiddleware = require("../middleware/auth.middleware");
 
 const audioRouter = express.Router();
 const transcribeRouter = express.Router();
@@ -16,11 +17,11 @@ const diarizeRouter = express.Router();
 
 audioRouter.post("/upload", upload, audioUpload);
 
-transcribeRouter.get("/transcribe", transcribe);
+transcribeRouter.get("/transcribe",authMiddleware, transcribe);
 
-summarizeRouter.get("/summary", summarize);
+summarizeRouter.get("/summary", authMiddleware,summarize);
 
-diarizeRouter.post("/diarize", speakerDiarization);
+diarizeRouter.post("/diarize",authMiddleware, speakerDiarization);
 
 module.exports = {
   audioRouter,

@@ -13,11 +13,13 @@ import Diarization from "../pages/Diarization/Diarization";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "../context/authContext";
 import PrivateRoutes from "../components/PrivateRoute";
+import { AudioUploadProvider } from "../context/audioContext";
 
 function AllRoutes() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <AudioUploadProvider>
         <Dashboard>
           <Toaster />
           <Routes>
@@ -33,6 +35,7 @@ function AllRoutes() {
             </Route>
           </Routes>
         </Dashboard>
+        </AudioUploadProvider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -14,6 +14,13 @@ import {
   MenuList,
   MenuItem,
   Button,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
 } from "@chakra-ui/react";
 
 import { FiChevronDown, FiMenu } from "react-icons/fi";
@@ -23,6 +30,8 @@ import { FaQuoteRight } from "react-icons/fa";
 import { RxActivityLog } from "react-icons/rx";
 import { NavLink, useLocation } from "react-router-dom";
 import Logout from "../Logout/Logout";
+import { useState } from "react";
+import Popup from "../../components/popup";
 
 const LinkItems = [
   { name: "Dashboard", icon: IoHomeSharp, path: "/dashboard" },
@@ -65,6 +74,7 @@ export default function Sidebar() {
 
 function SidebarContent({ onClose, ...rest }) {
   const username = localStorage.getItem("username");
+  const uploadSuccess = localStorage.getItem("uploadSuccess") === "true";
   return (
     <Box
       bg={"rgb(17,21,24)"}
@@ -77,9 +87,18 @@ function SidebarContent({ onClose, ...rest }) {
       {...rest}
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+        <img
+          src="https://i.ibb.co/7JtfWw2/audio-insight-logo.png"
+          alt="AI Logo"
+          width="50px"
+          height="50px"
+          overflow={"hidden"}
+          // objectFit={"cover"}
+        />
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           Audio Insight
         </Text>
+
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
 
@@ -89,6 +108,7 @@ function SidebarContent({ onClose, ...rest }) {
           to={link.path}
           icon={link.icon}
           onClose={onClose}
+          disabled={!uploadSuccess && link.name === "Dashboard"}
         >
           {link.name}
         </NavItem>
@@ -138,54 +158,86 @@ function SidebarContent({ onClose, ...rest }) {
   );
 }
 
-function NavItem({ icon, children, to, onClose, ...rest }) {
+
+function NavItem({ icon, children,disabled, to, onClose, ...rest }) {
+  const [showPopup, setShowPopup] = useState(false);
+  const uploadSuccess = localStorage.getItem("uploadSuccess") === "true";
+// console.log("uploadSuccess",uploadSuccess);
+  const handleClick = (e) => {
+    if (!uploadSuccess && !disabled) {
+      e.preventDefault(); // Prevent navigation if popup should be shown
+      setShowPopup(true);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
   return (
-    <NavLink
-      to={to}
-      style={({ isActive }) => ({
-        backgroundColor: isActive ? "rgb(40, 50, 58)" : "rgb(17,21,24)",
-        color: isActive ? "white" : "white",
-        textDecoration: "none",
-        display: "block",
-        width: "90%",
-        margin: "10px auto",
-        borderRadius: "0.5rem",
-      })}
-    >
-      {({ isActive }) => (
-        <Box
-          _focus={{ boxShadow: "none" }}
-          _hover={{
-            bg: !isActive && "rgb(40, 50, 58)",
-            color: "white",
-            borderRadius: "0.5rem",
-          }}
-          {...rest}
-          onClick={onClose}
-        >
-          <Flex
-            align="center"
-            p="4"
-            mx="4"
-            borderRadius="lg"
-            role="group"
-            cursor="pointer"
+    <>
+      <Popover
+        placement="top"
+        isOpen={showPopup}
+        onClose={handleClosePopup}
+      >
+        <PopoverTrigger>
+          <NavLink
+            to={disabled ? "#" : to}
+            onClick={handleClick}
+            style={({ isActive }) => ({
+              backgroundColor: isActive ? "rgb(40, 50, 58)" : "rgb(17,21,24)",
+              color: "white",
+              textDecoration: "none",
+              display: "block",
+              width: "90%",
+              margin: "10px auto",
+              borderRadius: "0.5rem",
+            })}
           >
-            {icon && (
-              <Icon
-                mr="4"
-                fontSize="16"
-                _groupHover={{
-                  color: "white",
-                }}
-                as={icon}
-              />
-            )}
-            {children}
-          </Flex>
-        </Box>
-      )}
-    </NavLink>
+            <Box
+              _focus={{ boxShadow: "none" }}
+              _hover={{
+                bg: "rgb(40, 50, 58)",
+                color: "white",
+                borderRadius: "0.5rem",
+              }}
+              {...rest}
+              onClick={onClose}
+            >
+              <Flex
+                align="center"
+                p="4"
+                mx="4"
+                borderRadius="lg"
+                role="group"
+                cursor="pointer"
+              >
+                {icon && (
+                  <Icon
+                    mr="4"
+                    fontSize="16"
+                    _groupHover={{
+                      color: "white",
+                    }}
+                    as={icon}
+                  />
+                )}
+                {children}
+              </Flex>
+            </Box>
+          </NavLink>
+        </PopoverTrigger>
+        <PopoverContent bg="#881337" color="white">
+          <PopoverArrow />
+          <PopoverCloseButton onClick={handleClosePopup} />
+          <PopoverHeader fontWeight="semibold">Upload File</PopoverHeader>
+          <PopoverBody>Please upload an audio file to proceed.</PopoverBody>
+        </PopoverContent>
+      </Popover>
+    </>
   );
 }
 
@@ -209,15 +261,14 @@ function MobileNav({ onOpen, ...rest }) {
         color={"white"}
         _hover={{ bg: "rgb(40,50,58)" }}
       />
-      <Text
-        fontSize="2xl"
-        ml="8"
-        fontFamily="monospace"
-        fontWeight="bold"
-        color={"white"}
-      >
-        AI
-      </Text>
+      <img
+        src="https://i.ibb.co/7JtfWw2/audio-insight-logo.png"
+        alt="AI Logo"
+        width="50px"
+        height="50px"
+        overflow={"hidden"}
+        // objectFit={"cover"}
+      />
     </Flex>
   );
 }

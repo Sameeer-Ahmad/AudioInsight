@@ -14,28 +14,21 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { API } from "../../backend-API/api";
 import AllCards from "./cards";
-import { useAudioUpload } from "../../context/audioContext";
+
+
 
 const AudioUpload = () => {
   const [mediaFileUrl, setMediaFileUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(false); // State to track upload success
-  const { setAudioUploaded } = useAudioUpload();
+  const [uploadSuccess, setUploadSuccess] = useState(false); 
+ 
   const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    // Check local storage for upload success state on component mount
-    const uploadState = localStorage.getItem("uploadSuccess");
-    if (uploadState === "true") {
-      setUploadSuccess(true);
-    }
-  }, []);
+ 
 
   const handleFileChange = (e) => {
     setMediaFileUrl(e.target.files[0]);
-    if (e.target.files[0]) {
-      setAudioUploaded(true);
-    }
+    
   };
 
   const handleSubmit = async (e) => {
@@ -72,6 +65,7 @@ const AudioUpload = () => {
       console.log("File uploaded successfully", mediaFileUrl);
       setUploadSuccess(true); // Set upload success state to true
       localStorage.setItem("uploadSuccess", "true"); // Store upload success state in local storage
+      
     } catch (error) {
       console.error("Error uploading file:", error);
       toast.error("Failed to upload file.", {
@@ -171,7 +165,7 @@ const AudioUpload = () => {
           </VStack>
         </form>
       </Box>
-      {uploadSuccess && <AllCards />}
+      {uploadSuccess && <AllCards /> }
     </Box>
   );
 };

@@ -19,7 +19,7 @@ import { BiMailSend } from "react-icons/bi";
 const Logo = () => {
   return (
     <img
-      src="https://s4.ezgif.com/tmp/ezgif-4-1273f842f0.png"
+      src="https://i.ibb.co/7JtfWw2/audio-insight-logo.png"
       alt="audio insight"
       width="60px"
       height="60px"

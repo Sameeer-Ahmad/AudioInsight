@@ -68,7 +68,7 @@ export default function Navbar() {
         </Flex>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
           <img
-            src="./Logo.png"
+            src="https://i.ibb.co/7JtfWw2/audio-insight-logo.png"
             alt="AI Logo"
             width="50px"
             height="50px"

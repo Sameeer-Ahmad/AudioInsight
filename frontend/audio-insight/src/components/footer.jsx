@@ -12,7 +12,7 @@ import {
   IconButton,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+
 import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { BiMailSend } from "react-icons/bi";
 
@@ -61,7 +61,7 @@ const ListHeader = ({ children }) => {
 
 export default function Footer() {
   return (
-    <Box bg={"#171923"} color={"white"}>
+    <Box bg={"#171923"} color={"white"} >
       <Container as={Stack} maxW={"6xl"} py={10}>
         <SimpleGrid
           templateColumns={{ sm: "1fr 1fr", md: "2fr 1fr 1fr 2fr" }}

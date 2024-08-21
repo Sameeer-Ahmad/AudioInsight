@@ -24,7 +24,10 @@ const AudioUpload = () => {
  
   const fileInputRef = useRef(null);
 
- 
+  useEffect(() => {
+    const success = localStorage.getItem("uploadSuccess") === "true";
+    setUploadSuccess(success);
+  }, []);
 
   const handleFileChange = (e) => {
     setMediaFileUrl(e.target.files[0]);

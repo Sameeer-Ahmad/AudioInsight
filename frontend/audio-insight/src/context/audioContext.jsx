@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import  { createContext, useContext, useState, useEffect } from "react";
 
 const AudioUploadContext = createContext();
 
@@ -8,7 +8,6 @@ export const AudioUploadProvider = ({ children }) => {
   const [audioUploaded, setAudioUploaded] = useState(false);
 
   useEffect(() => {
-    // Check local storage for upload success state on component mount
     const uploadState = localStorage.getItem("uploadSuccess");
     if (uploadState === "true") {
       setAudioUploaded(true);

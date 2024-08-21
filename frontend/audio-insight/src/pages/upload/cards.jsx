@@ -109,12 +109,12 @@ const AllCards = () => {
         "https://www.shutterstock.com/image-vector/businessman-cartoon-on-paper-sheet-260nw-165416321.jpg",
       link: "/summary", // Specify the route for each card
     },
-    {
-      title: "Diarize",
-      description: "Diarize audio in real-time.",
-      imageUrl: "https://img-c.udemycdn.com/course/750x422/4752864_afe0_2.jpg",
-      link: "/diarization", // Specify the route for each card
-    },
+    // {
+    //   title: "Diarize",
+    //   description: "Diarize audio in real-time.",
+    //   imageUrl: "https://img-c.udemycdn.com/course/750x422/4752864_afe0_2.jpg",
+    //   link: "/diarization", // Specify the route for each card
+    // },
     {
       title: "Q&A",
       description: "Answer questions in real-time.",

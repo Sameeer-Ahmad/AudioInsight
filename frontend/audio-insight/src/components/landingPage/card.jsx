@@ -5,6 +5,7 @@ import { Image } from "react-bootstrap";
 // import 'animate.css';
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { QA, Summary, Transcribe } from "../../assets";
 AOS.init();
 
 export function ThreeDCard() {
@@ -29,13 +30,13 @@ export function ThreeDCard() {
             >
               Discover the ease of converting audio to text.
             </CardItem>
-            <CardItem translateZ="100" className="w-full mt-4">
+            <CardItem translateZ="100" className="w-full mt-12 sm:mt-4 md:mt-8 xs:mt-12">
               <Image
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={Transcribe}
                 height="1000"
                 width="1000"
-                className="h-60 sm:h-48 md:h-48 lg:h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-                alt="Transcribe AudiO"
+                className="h-full mt-12 sm:h-full md:h-full lg:h-full w-full object-cover rounded-xl group-hover/card:shadow-xl"
+                alt="Transcribe Audio"
               />
             </CardItem>
           </CardBody>
@@ -61,7 +62,10 @@ export function ThreeDCard() {
         </Box>
       </div>
 
-      <div className="flex flex-col-reverse md:flex-row items-center justify-around gap-0" data-aos="zoom-in">
+      <div
+        className="flex flex-col-reverse md:flex-row items-center justify-around gap-0"
+        data-aos="zoom-in"
+      >
         <Box
           fontSize={["sm", "md", "lg"]}
           className="flex flex-col space-y-2 text-neutral-400 dark:text-white max-w-sm text-lg xs:text-sm md:text-lg p-2 "
@@ -96,12 +100,12 @@ export function ThreeDCard() {
             >
               Discover the power of automatic content summarization.
             </CardItem>
-            <CardItem translateZ="100" className="w-full mt-4">
+            <CardItem translateZ="100" className="w-full mt-12 sm:mt-4 md:mt-8 xs:mt-12">
               <Image
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={Summary}
                 height="1000"
                 width="1000"
-                className="h-60 sm:h-48 md:h-48 lg:h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
+                className="h-full lg:h-full w-full object-cover rounded-xl group-hover/card:shadow-xl"
                 alt="Summarize AudiO"
               />
             </CardItem>
@@ -109,56 +113,36 @@ export function ThreeDCard() {
         </CardContainer>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center justify-around gap-0" data-aos="zoom-in">
-        <CardContainer className="inter-var " data-aos="zoom-in">
+      <div
+        className="flex flex-col-reverse md:flex-row items-center justify-around gap-0 mb-10"
+        data-aos="zoom-in"
+      >
+          <CardContainer className="inter-var" data-aos="zoom-in">
           <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] h-96 sm:h-70 md:h-80 lg:h-96 sm:w-72 md:w-80 lg:w-96 rounded-xl p-6 border">
             <CardItem
               translateZ="50"
               className="text-xl font-bold text-neutral-600 dark:text-white"
             >
-              Identify Different Speakers
+              Interactive Audio Q&A
             </CardItem>
             <CardItem
               as="p"
               translateZ="60"
               className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
             >
-              Easily differentiate and label multiple speakers in your audio
-              recordings.
+              Engage with audio content through real-time questions and answers.
             </CardItem>
-            <CardItem translateZ="100" className="w-full mt-4">
+            <CardItem translateZ="100" className="w-full mt-12 sm:mt-8 md:mt-8">
               <Image
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                src={QA}
                 height="1000"
                 width="1000"
-                className="h-60 sm:h-48 md:h-48 lg:h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-                alt="Speaker Diarization"
+                className="h-full lg:h-full w-full object-cover rounded-xl group-hover/card:shadow-xl"
+                alt="audio Q&A "
               />
             </CardItem>
           </CardBody>
         </CardContainer>
-
-        <Box
-          fontSize={["sm", "md", "lg"]}
-          className="flex flex-col space-y-2 text-neutral-400 dark:text-white max-w-sm text-lg xs:text-sm md:text-lg p-2 "
-          data-aos="zoom-in"
-        >
-          <h2 className="text-2xl font-bold">About Speaker Diarization</h2>
-          <p>
-            Speaker diarization is the process of segmenting an audio stream
-            into distinct speakers. It helps in identifying and labeling
-            different speakers in a conversation.
-          </p>
-          <p>
-            This feature is particularly useful for transcribing meetings,
-            interviews, and any scenario involving multiple participants,
-            allowing you to attribute spoken words to the correct individuals
-            accurately.
-          </p>
-        </Box>
-      </div>
-
-      <div className="flex flex-col-reverse md:flex-row items-center justify-around gap-0" data-aos="zoom-in">
         <Box
           fontSize={["sm", "md", "lg"]}
           className="flex flex-col space-y-2 text-neutral-400 dark:text-white max-w-sm text-lg xs:text-sm md:text-lg p-2 "
@@ -177,33 +161,9 @@ export function ThreeDCard() {
             content by enabling a dynamic exchange of information.
           </p>
         </Box>
-        <CardContainer className="inter-var" data-aos="zoom-in">
-          <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] h-96 sm:h-70 md:h-80 lg:h-96 sm:w-72 md:w-80 lg:w-96 rounded-xl p-6 border">
-            <CardItem
-              translateZ="50"
-              className="text-xl font-bold text-neutral-600 dark:text-white"
-            >
-              Interactive Audio Q&A
-            </CardItem>
-            <CardItem
-              as="p"
-              translateZ="60"
-              className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-            >
-              Engage with audio content through real-time questions and answers.
-            </CardItem>
-            <CardItem translateZ="100" className="w-full mt-4">
-              <Image
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                height="1000"
-                width="1000"
-                className="h-60 sm:h-48 md:h-48 lg:h-60 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-                alt="audio Q&A "
-              />
-            </CardItem>
-          </CardBody>
-        </CardContainer>
+      
       </div>
     </div>
   );
 }
+

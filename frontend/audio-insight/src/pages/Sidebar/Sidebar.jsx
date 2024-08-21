@@ -27,17 +27,15 @@ import { FiChevronDown, FiMenu } from "react-icons/fi";
 import { IoHomeSharp } from "react-icons/io5";
 import { MdQuestionAnswer, MdSummarize } from "react-icons/md";
 import { FaQuoteRight } from "react-icons/fa";
-import { RxActivityLog } from "react-icons/rx";
 import { NavLink, useLocation } from "react-router-dom";
 import Logout from "../Logout/Logout";
 import { useState } from "react";
-import Popup from "../../components/popup";
 
 const LinkItems = [
   { name: "Dashboard", icon: IoHomeSharp, path: "/dashboard" },
   { name: "Transcriptions", icon: FaQuoteRight, path: "/transcribe" },
   { name: "Summarizatons", icon: MdSummarize, path: "/summary" },
-  { name: "Diarizations", icon: RxActivityLog, path: "/diarization" },
+  // { name: "Diarizations", icon: RxActivityLog, path: "/diarization" },
   { name: "Q&A", icon: MdQuestionAnswer, path: "/Qna" },
 ];
 

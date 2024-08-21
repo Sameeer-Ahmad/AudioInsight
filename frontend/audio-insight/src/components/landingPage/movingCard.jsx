@@ -2,7 +2,7 @@ import { InfiniteMovingCards } from "../../utils/infinite-moving-cards";
 
 export function MovingCard() {
   return (
-    <div className="h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
+    <div className="h-[20rem] rounded-md flex flex-col antialiased bg-rgb(17,21,24) dark:bg-[#171923] dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden hidden sm:hidden md:hidden lg:flex">
       <InfiniteMovingCards
         items={testimonials}
         direction="right"
@@ -12,34 +12,37 @@ export function MovingCard() {
   );
 }
 
+
 const testimonials = [
   {
     quote:
-      "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness, it was the epoch of belief, it was the epoch of incredulity, it was the season of Light, it was the season of Darkness, it was the spring of hope, it was the winter of despair.",
-    name: "Charles Dickens",
-    title: "A Tale of Two Cities",
+      "Audio Insight has completely changed how we process audio data. The real-time transcription is accurate and has made a huge difference in our team discussions.",
+    name: "Rohit Verma",
+    title: "Project Manager at AudioWave Solutions",
   },
   {
     quote:
-      "To be, or not to be, that is the question: Whether 'tis nobler in the mind to suffer The slings and arrows of outrageous fortune, Or to take Arms against a Sea of troubles, And by opposing end them: to die, to sleep.",
-    name: "William Shakespeare",
-    title: "Hamlet",
-  },
-  {
-    quote: "All that we see or seem is but a dream within a dream.",
-    name: "Edgar Allan Poe",
-    title: "A Dream Within a Dream",
+      "The summarization feature is a lifesaver! It efficiently condenses lengthy audio into insightful summaries, helping me focus on the key points without getting lost in the details.",
+    name: "Anjali Mehra",
+    title: "Research Analyst at SoundTech Labs",
   },
   {
     quote:
-      "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
-    name: "Jane Austen",
-    title: "Pride and Prejudice",
+      "Audio Insight's audio Q&A feature is truly remarkable. It provides real-time, accurate responses to queries based on the audio, making our live sessions run smoothly.",
+    name: "Vikram Singh",
+    title: "Event Coordinator at LiveEvents India",
   },
   {
     quote:
-      "Call me Ishmael. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would sail about a little and see the watery part of the world.",
-    name: "Herman Melville",
-    title: "Moby-Dick",
+      "With its seamless integration with MySQL and Node.js, Audio Insight has made it easy to manage our audio data efficiently. This tool has significantly improved our workflow.",
+    name: "Nisha Kapoor",
+    title: "Lead Developer at Sonic Systems Pvt. Ltd.",
+  },
+  {
+    quote:
+      "Audio Insight has cut down our podcast production time by half with its accurate transcription and summarization. It's an indispensable tool for our media production team.",
+    name: "Rajesh Iyer",
+    title: "Podcast Producer at VoiceBox Media India",
   },
 ];
+

@@ -14,7 +14,7 @@ export function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   // const {login} =useAuth()
-  const { from } = location.state || { from: { pathname: "/" } };
+ 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,13 +25,13 @@ export function Login() {
     axios
       .post(`${API}/user/login`, payload)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         toast.success("Successfully logged in!");
         localStorage.setItem("token", res.data.accessToken);
         localStorage.setItem("username", res.data.username);
-        console.log(res.data.accessToken);
+        // console.log(res.data.accessToken);
         login(res.data.accessToken)
-        navigate(from, { replace: true });
+        // navigate(from, { replace: true });
         navigate("/dashboard");
       })
       .catch((err) => {

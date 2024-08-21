@@ -12,7 +12,7 @@ function Home() {
       <Navbar/>
       <ProjectName/>
       <ThreeDCard/>
-      {/* <MovingCard/> */}
+      <MovingCard/>
       <Footer/>
     </Box>
   )

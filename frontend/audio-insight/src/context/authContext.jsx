@@ -6,17 +6,16 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // Simulate API call success
       setTimeout(() => {
         setIsAuthenticated(true);
         setLoading(false);
-      }, 1000); // Adjust time according to your actual API call time
+      }, 1000); 
     } else {
       setLoading(false);
     }

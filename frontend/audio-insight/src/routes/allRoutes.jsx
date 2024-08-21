@@ -13,13 +13,11 @@ import Diarization from "../pages/Diarization/Diarization";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "../context/authContext";
 import PrivateRoutes from "../components/PrivateRoute";
-import { AudioUploadProvider } from "../context/audioContext";
 
 function AllRoutes() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AudioUploadProvider>
         <Dashboard>
           <Toaster />
           <Routes>
@@ -30,12 +28,11 @@ function AllRoutes() {
               <Route path="/dashboard" element={<AudioUpload />} />
               <Route path="/transcribe" element={<Transcribe />} />
               <Route path="/summary" element={<Summary />} />
-              <Route path="/diarization" element={<Diarization />} />
+              {/* <Route path="/diarization" element={<Diarization />} /> */}
               <Route path="/Qna" element={<AudioQna />} />
             </Route>
           </Routes>
         </Dashboard>
-        </AudioUploadProvider>
       </AuthProvider>
     </BrowserRouter>
   );

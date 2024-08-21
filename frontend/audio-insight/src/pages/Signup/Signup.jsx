@@ -30,7 +30,7 @@ export function Signup() {
     axios
       .post(`${API}/user/signup`, payload)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         toast.success("Successfully created an account!");
         navigate("/login")
       })

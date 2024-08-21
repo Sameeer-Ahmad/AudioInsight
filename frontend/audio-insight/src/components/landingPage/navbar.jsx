@@ -107,7 +107,7 @@ export default function Navbar() {
               fontWeight={600}
               color={"white"}
               bg={"#881337"}
-              _hover={{  bg: "#4c0519" }}
+              _hover={{ bg: "#4c0519" }}
               href={"#"}
               colorScheme="whiteAlpha"
             >
@@ -300,12 +300,7 @@ const NAV_ITEMS = [
         subLabel: "Get concise summaries of your lengthy audio recordings.",
         href: "#",
       },
-      {
-        label: "Speaker Diarization",
-        subLabel:
-          "Identify and differentiate speakers in your audio recordings.",
-        href: "#",
-      },
+
       {
         label: "Audio Q&A",
         subLabel:

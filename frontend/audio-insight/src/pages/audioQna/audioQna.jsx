@@ -22,9 +22,10 @@ const AudioQna = () => {
   const handleChange = (e) => {
     setQuestion(e.target.value);
   };
+  
   const askQuestion = () => {
     if (socket) {
-      socket.emit("askQuestion", { question });
+      socket.emit("askQuestion", { question, });
 
       socket.on("answer", (data) => {
         setAnswer(`Q: ${question}\nA: ${data.answer}`);
@@ -66,15 +67,7 @@ const AudioQna = () => {
           onChange={handleChange}
           onClick={askQuestion}
         />
-        {/* <Button mt={4} colorScheme="blue" onClick={askQuestion}>
-          Ask Question
-        </Button>
-        <Input
-            id="question"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Ask your question..."
-          /> */}
+       
         <Divider mt={4} />
         <VStack mt={4} align="stretch" spacing={4}>
           {qaHistory.map((qa, index) => (

@@ -25,6 +25,9 @@ const transcribe = async (req, res) => {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const { language } = req.query;
     const latestAudio = await AudioProcessingModel.findOne({
+      where: {
+        userId: req.user.id,
+      },
       order: [["createdAt", "DESC"]],
     });
 
@@ -52,6 +55,9 @@ const summarize = async (req, res) => {
   try {
     const { language } = req.query; 
     const latestAudio = await AudioProcessingModel.findOne({
+      where: {
+        userId: req.user.id,
+      },
       order: [["createdAt", "DESC"]],
     });
 
@@ -78,7 +84,6 @@ const summarize = async (req, res) => {
     });
   }
 };
-
 
 
 const speakerDiarization = async (req, res) => {

@@ -45,4 +45,3 @@ const testimonials = [
     title: "Podcast Producer at VoiceBox Media India",
   },
 ];
-

@@ -6,7 +6,7 @@ import ButtonGradient from "../../utils/button-gradient/buttonGradient";
 import { MdArrowDropDown } from "react-icons/md";
 import { toast } from "react-hot-toast";
 const Transcribe = () => {
-  const [language, setLanguage] = useState("en"); // Default language
+  const [language, setLanguage] = useState("en"); 
   const [transcription, setTranscription] = useState("");
   const [loading, setLoading] = useState(false);
 

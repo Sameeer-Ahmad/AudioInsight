@@ -10,7 +10,7 @@ module.exports = (io) => {
     // console.log(`A user connected: ${socket.id}`);
 
     socket.on("sendMessage", (data) => {
-      // console.log(data);
+      console.log("Message received",data);
       socket.emit("receiveMessage", "Message received!");
     });
 
@@ -26,8 +26,8 @@ module.exports = (io) => {
 
         const transcription = latestAudio.transcription;
 
-        const prompt = `Based on the provided transcription "${transcription}", summarize the main points from the transcription in response to the question and make it short: "${question}"
-`;
+        const prompt = `Based on the provided transcription "${transcription}", answer the following question and don't make answer much lengthy: "${question}"`;
+
 
         const result = await model.generateContent([prompt]);
         const answer = result.response.text();

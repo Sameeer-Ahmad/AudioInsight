@@ -20,16 +20,7 @@ SummaryModel.belongsTo(AudioProcessingModel, {
   foreignKey: "audioProcessingId",
 });
 
-// AudioProcessingModel.hasMany(SpeakerModel, {
-//   foreignKey: "audioProcessingId",
-//   onDelete: "CASCADE",
-// });
 
-// SpeakerModel.belongsTo(AudioProcessingModel, {
-//   foreignKey: "audioProcessingId",
-// });
-
-// Sync models with the database
 sequelize.sync({ force: false }).then(() => {
   console.log("Database & tables created!");
 });
@@ -38,6 +29,5 @@ module.exports = {
   UserModel,
   AudioProcessingModel,
   SummaryModel,
-  // SpeakerModel,
-};
+}
 

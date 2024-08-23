@@ -5,7 +5,6 @@ const client = new SpeechClient({key: process.env.API_KEY});
 
 
 const speechToText = async (audioUrl) => {
-  // Download the audio file from Cloudinary
   const responses = await axios({
     url: audioUrl,
     method: "GET",
@@ -14,7 +13,6 @@ const speechToText = async (audioUrl) => {
 
   const audioBuffer = Buffer.from(responses.data);
 
-  // Dynamically import the file-type module
   const { fileTypeFromBuffer } = await import("file-type");
   const type = await fileTypeFromBuffer(audioBuffer);
 
@@ -64,8 +62,8 @@ const speechToText = async (audioUrl) => {
       encoding,
       sampleRateHertz,
       languageCode: "en-US",
-      enableSpeakerDiarization: true, // Enable speaker diarization
-      diarizationSpeakerCount: 2, // Specify the number of speakers
+      enableSpeakerDiarization: true,
+      diarizationSpeakerCount: 2, 
     },
   };
 

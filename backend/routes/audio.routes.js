@@ -4,7 +4,6 @@ const { audioUpload } = require("../controller/AudioProcessing.controller");
 const {
   transcribe,
   summarize,
-  speakerDiarization,
 } = require("../controller/allFeature");
 
 const upload = require("../utils/multer");

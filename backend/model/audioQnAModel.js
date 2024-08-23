@@ -18,7 +18,7 @@ const AudioQnAModel = sequelize.define('AudioQnA', {
   },
   answer: {
     type: DataTypes.TEXT,
-    allowNull: true, // Initially null, will be filled later
+    allowNull: true,
   },
   createdAt: {
     type: DataTypes.DATE,

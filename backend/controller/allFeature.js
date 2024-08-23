@@ -1,11 +1,7 @@
 const { AudioProcessingModel } = require("../model/audioProcessing.model");
 const { SummaryModel } = require("../model/summary.model");
 require("dotenv").config();
-const axios = require("axios");
-const {
-  SpeakerModel,
-  SpeakerSegmentModel,
-} = require("../model/speakerDiarization.model");
+
 
 
 const { summarizeText } = require("../utils/summarizeText");
@@ -86,48 +82,8 @@ const summarize = async (req, res) => {
 };
 
 
-const speakerDiarization = async (req, res) => {
-  try {
-    
-
-    // Fetch the audio URL from the AudioProcessing table
-    const audioProcessing = await AudioProcessingModel.findOne({
-      order: [["createdAt", "DESC"]],
-    });
-    if (!audioProcessing) {
-      return res.status(404).json({ error: "Audio not found" });
-    }
-
-    const audioUrl = audioProcessing.mediaFileUrl;
-    console.log("audioUrl", audioUrl);
-
-    // Fetch the latest transcription
-    const transcription = audioProcessing.transcription;
-    if (!transcription) {
-      return res.status(404).json({ error: "Transcription not found" });
-    }
-
-    // Create a prompt for speaker diarization
-    const prompt =  `Analyze the following transcription and provide speaker diarization in the format "Speaker 1: ...", "Speaker 2: ...":
-    "${transcription}"`;
-
-    // Use Gemini AI to generate speaker diarization
-    const result = await model.generateContent([prompt]);
-    const diarization = result.response.text();
-
-    // Optionally, update the audio processing record with the diarization result
-    // await AudioProcessingModel.update({ diarization }, { where: { id: audioProcessingId } });
-
-    // Return the result
-    res.status(200).json({ transcribedText: transcription, diarization: diarization });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: "An error occurred during speaker diarization",
-    });
-  }
-};
 
 
 
-module.exports = { transcribe, summarize, speakerDiarization };
+
+module.exports = { transcribe, summarize };

@@ -9,7 +9,6 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import AudioUpload from "../pages/upload/audioUpload";
 import Transcribe from "../pages/Transcribe/Transcribe";
 import Summary from "../pages/Summary/Summary";
-import Diarization from "../pages/Diarization/Diarization";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "../context/authContext";
 import PrivateRoutes from "../components/PrivateRoute";
@@ -28,7 +27,6 @@ function AllRoutes() {
               <Route path="/dashboard" element={<AudioUpload />} />
               <Route path="/transcribe" element={<Transcribe />} />
               <Route path="/summary" element={<Summary />} />
-              {/* <Route path="/diarization" element={<Diarization />} /> */}
               <Route path="/Qna" element={<AudioQna />} />
             </Route>
           </Routes>

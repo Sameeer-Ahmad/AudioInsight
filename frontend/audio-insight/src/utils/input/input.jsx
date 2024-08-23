@@ -5,22 +5,18 @@ import { VanishInput } from "./vanishedInput";
 
 const PlaceholdersAndVanishInput = ({ onChange, onClick }) => {
   const placeholders = [
-    
     "Ask your question here",
     "Ask anything about the audio",
     "Enter your question",
     "Type your query",
     "What would you like to know?"
-    
   ];
 
   const handleChange = (e) => {
-    // Handle change logic here if needed
     onChange && onChange(e);
   };
 
   const handleSubmit = () => {
-    // Handle submit logic here if needed
     onClick && onClick();
   };
 
@@ -29,7 +25,7 @@ const PlaceholdersAndVanishInput = ({ onChange, onClick }) => {
       <VanishInput
         placeholders={placeholders}
         onChange={handleChange}
-        onClick={handleSubmit} // Changed prop name to onClick
+        onClick={handleSubmit} 
       />
     </div>
   );

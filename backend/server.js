@@ -13,21 +13,15 @@ app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-});
+const io = new Server(server);
 
 const {
   audioRouter,
   transcribeRouter,
   summarizeRouter,
-  diarizeRouter,
 } = require("./routes/audio.routes");
 
-require("events").EventEmitter.defaultMaxListeners = 20;
+// require("events").EventEmitter.defaultMaxListeners = 20;
 
 app.use("/user", authRouter);
 app.use(
@@ -36,7 +30,6 @@ app.use(
   audioRouter,
   transcribeRouter,
   summarizeRouter,
-  diarizeRouter
 );
 
 app.get("/", (req, res) => {

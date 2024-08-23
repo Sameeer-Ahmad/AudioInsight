@@ -22,7 +22,7 @@ const AudioQna = () => {
   const handleChange = (e) => {
     setQuestion(e.target.value);
   };
-  
+  ` hf`
   const askQuestion = () => {
     if (socket) {
       socket.emit("askQuestion", { question, });

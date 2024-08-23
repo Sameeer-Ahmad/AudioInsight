@@ -39,14 +39,12 @@ const login = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Validate password
     const isPasswordMatch = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatch) {
       return res.status(401).json({ error: "Invalid password" });
     }
-
-    // Generate JWT token
+    
     const accessToken = jwt.sign(
       { userId: user.id, email: user.email, username: user.username },
 

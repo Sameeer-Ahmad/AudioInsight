@@ -1,34 +1,22 @@
 // AudioQna.js
 import { useState, useEffect } from "react";
 import useSocket from "../../hooks/useSocket";
-import {
-  Box,
-  Flex,
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  Text,
-  Divider,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Text, Divider, VStack } from "@chakra-ui/react";
 import PlaceholdersAndVanishInput from "../../utils/input/input";
 
 const AudioQna = () => {
   const socket = useSocket();
   const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
   const [qaHistory, setQaHistory] = useState([]);
   const handleChange = (e) => {
     setQuestion(e.target.value);
   };
-  ` hf`
+
   const askQuestion = () => {
     if (socket) {
-      socket.emit("askQuestion", { question, });
+      socket.emit("askQuestion", { question });
 
       socket.on("answer", (data) => {
-        setAnswer(`Q: ${question}\nA: ${data.answer}`);
         setQaHistory([{ question, answer: data.answer }, ...qaHistory]);
         setQuestion("");
       });
@@ -67,7 +55,7 @@ const AudioQna = () => {
           onChange={handleChange}
           onClick={askQuestion}
         />
-       
+
         <Divider mt={4} />
         <VStack mt={4} align="stretch" spacing={4}>
           {qaHistory.map((qa, index) => (
@@ -78,8 +66,12 @@ const AudioQna = () => {
               color="white"
               bg={"rgb(40, 50, 58)"}
             >
-              <Text fontSize={"lg"} fontWeight="bold">Qus: {qa.question}</Text>
-              <Text pl={2}  fontSize={"md"} mt={2} color={"gray.400"}>Ans: {qa.answer}</Text>
+              <Text fontSize={"lg"} fontWeight="bold">
+                Qus: {qa.question}
+              </Text>
+              <Text pl={2} fontSize={"md"} mt={2} color={"gray.400"}>
+                Ans: {qa.answer}
+              </Text>
             </Box>
           ))}
         </VStack>

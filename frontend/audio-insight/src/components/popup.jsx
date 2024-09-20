@@ -25,7 +25,7 @@ function Popup({ onClose }) {
         />
       </PopoverTrigger>
       <PopoverContent bg="tomato" color="white">
-        <PopoverHeader fontWeight="semibold">Upload File</PopoverHeader>
+        <PopoverHeader fontWeight="semibold"> </PopoverHeader>
         <PopoverArrow bg="pink.500" />
         <PopoverCloseButton bg="purple.500" onClick={onClose} />
         <PopoverBody>

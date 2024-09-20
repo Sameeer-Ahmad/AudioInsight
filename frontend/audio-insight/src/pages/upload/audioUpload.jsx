@@ -15,23 +15,14 @@ import axios from "axios";
 import { API } from "../../backend-API/api";
 import AllCards from "./cards";
 
-
-
 const AudioUpload = () => {
   const [mediaFileUrl, setMediaFileUrl] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(false); 
- 
-  const fileInputRef = useRef(null);
 
-  useEffect(() => {
-    const success = localStorage.getItem("uploadSuccess") === "true";
-    setUploadSuccess(success);
-  }, []);
+  const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     setMediaFileUrl(e.target.files[0]);
-    
   };
 
   const handleSubmit = async (e) => {
@@ -66,8 +57,6 @@ const AudioUpload = () => {
       });
 
       console.log("File uploaded successfully", mediaFileUrl);
-      setUploadSuccess(true); // Set upload success state to true
-      localStorage.setItem("uploadSuccess", "true"); // Store upload success state in local storage
       
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -168,7 +157,8 @@ const AudioUpload = () => {
           </VStack>
         </form>
       </Box>
-      {uploadSuccess && <AllCards /> }
+      {/* AllCards component is now always visible */}
+      <AllCards />
     </Box>
   );
 };

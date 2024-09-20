@@ -14,13 +14,6 @@ import {
   MenuList,
   MenuItem,
   Button,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
 } from "@chakra-ui/react";
 
 import { FiChevronDown, FiMenu } from "react-icons/fi";
@@ -29,13 +22,11 @@ import { MdQuestionAnswer, MdSummarize } from "react-icons/md";
 import { FaQuoteRight } from "react-icons/fa";
 import { NavLink, useLocation } from "react-router-dom";
 import Logout from "../Logout/Logout";
-import { useState } from "react";
 
 const LinkItems = [
   { name: "Dashboard", icon: IoHomeSharp, path: "/dashboard" },
   { name: "Transcriptions", icon: FaQuoteRight, path: "/transcribe" },
   { name: "Summarizatons", icon: MdSummarize, path: "/summary" },
-  // { name: "Diarizations", icon: RxActivityLog, path: "/diarization" },
   { name: "Q&A", icon: MdQuestionAnswer, path: "/Qna" },
 ];
 
@@ -44,6 +35,7 @@ export default function Sidebar() {
   const location = useLocation();
   const hideSidebarPaths = ["/login", "/signup", "/"];
   const shouldHideSidebar = hideSidebarPaths.includes(location.pathname);
+  
   return (
     !shouldHideSidebar && (
       <Box minH="100vh" bg={"rgb(17,21,24)"} color={"white"}>
@@ -72,7 +64,7 @@ export default function Sidebar() {
 
 function SidebarContent({ onClose, ...rest }) {
   const username = localStorage.getItem("username");
-  const uploadSuccess = localStorage.getItem("uploadSuccess") === "true";
+
   return (
     <Box
       bg={"rgb(17,21,24)"}
@@ -91,7 +83,6 @@ function SidebarContent({ onClose, ...rest }) {
           width="50px"
           height="50px"
           overflow={"hidden"}
-          // objectFit={"cover"}
         />
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           Audio Insight
@@ -101,13 +92,7 @@ function SidebarContent({ onClose, ...rest }) {
       </Flex>
 
       {LinkItems.map((link) => (
-        <NavItem
-          key={link.name}
-          to={link.path}
-          icon={link.icon}
-          onClose={onClose}
-          disabled={!uploadSuccess && link.name === "Dashboard"}
-        >
+        <NavItem key={link.name} to={link.path} icon={link.icon} onClose={onClose}>
           {link.name}
         </NavItem>
       ))}
@@ -156,86 +141,52 @@ function SidebarContent({ onClose, ...rest }) {
   );
 }
 
-
-function NavItem({ icon, children,disabled, to, onClose, ...rest }) {
-  const [showPopup, setShowPopup] = useState(false);
-  const uploadSuccess = localStorage.getItem("uploadSuccess") === "true";
-// console.log("uploadSuccess",uploadSuccess);
-  const handleClick = (e) => {
-    if (!uploadSuccess && !disabled) {
-      e.preventDefault(); // Prevent navigation if popup should be shown
-      setShowPopup(true);
-    } else {
-      onClose();
-    }
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
-
+function NavItem({ icon, children, to, onClose, ...rest }) {
   return (
-    <>
-      <Popover
-        placement="top"
-        isOpen={showPopup}
-        onClose={handleClosePopup}
+    <NavLink
+      to={to}
+      style={({ isActive }) => ({
+        backgroundColor: isActive ? "rgb(40, 50, 58)" : "rgb(17,21,24)",
+        color: "white",
+        textDecoration: "none",
+        display: "block",
+        width: "90%",
+        margin: "10px auto",
+        borderRadius: "0.5rem",
+      })}
+      onClick={onClose}
+    >
+      <Box
+        _focus={{ boxShadow: "none" }}
+        _hover={{
+          bg: "rgb(40, 50, 58)",
+          color: "white",
+          borderRadius: "0.5rem",
+        }}
+        {...rest}
       >
-        <PopoverTrigger>
-          <NavLink
-            to={disabled ? "#" : to}
-            onClick={handleClick}
-            style={({ isActive }) => ({
-              backgroundColor: isActive ? "rgb(40, 50, 58)" : "rgb(17,21,24)",
-              color: "white",
-              textDecoration: "none",
-              display: "block",
-              width: "90%",
-              margin: "10px auto",
-              borderRadius: "0.5rem",
-            })}
-          >
-            <Box
-              _focus={{ boxShadow: "none" }}
-              _hover={{
-                bg: "rgb(40, 50, 58)",
+        <Flex
+          align="center"
+          p="4"
+          mx="4"
+          borderRadius="lg"
+          role="group"
+          cursor="pointer"
+        >
+          {icon && (
+            <Icon
+              mr="4"
+              fontSize="16"
+              _groupHover={{
                 color: "white",
-                borderRadius: "0.5rem",
               }}
-              {...rest}
-              onClick={onClose}
-            >
-              <Flex
-                align="center"
-                p="4"
-                mx="4"
-                borderRadius="lg"
-                role="group"
-                cursor="pointer"
-              >
-                {icon && (
-                  <Icon
-                    mr="4"
-                    fontSize="16"
-                    _groupHover={{
-                      color: "white",
-                    }}
-                    as={icon}
-                  />
-                )}
-                {children}
-              </Flex>
-            </Box>
-          </NavLink>
-        </PopoverTrigger>
-        <PopoverContent bg="#881337" color="white">
-          <PopoverArrow />
-          <PopoverCloseButton onClick={handleClosePopup} />
-          <PopoverHeader fontWeight="semibold">Upload File</PopoverHeader>
-          <PopoverBody>Please upload an audio file to proceed.</PopoverBody>
-        </PopoverContent>
-      </Popover>
-    </>
+              as={icon}
+            />
+          )}
+          {children}
+        </Flex>
+      </Box>
+    </NavLink>
   );
 }
 
@@ -265,7 +216,6 @@ function MobileNav({ onOpen, ...rest }) {
         width="50px"
         height="50px"
         overflow={"hidden"}
-        // objectFit={"cover"}
       />
     </Flex>
   );

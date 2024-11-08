@@ -1,2 +1,2 @@
-export const API="https://audioinsight.up.railway.app/";
+export const API="https://audioinsight.up.railway.app";
 

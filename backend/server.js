@@ -21,7 +21,6 @@ const {
   summarizeRouter,
 } = require("./routes/audio.routes");
 
-// require("events").EventEmitter.defaultMaxListeners = 20;
 
 app.use("/user", authRouter);
 app.use(
@@ -29,7 +28,7 @@ app.use(
   authMiddleware,
   audioRouter,
   transcribeRouter,
-  summarizeRouter,
+  summarizeRouter
 );
 
 app.get("/", (req, res) => {
@@ -46,5 +45,3 @@ server.listen(PORT, async () => {
     console.log(err);
   }
 });
-
-

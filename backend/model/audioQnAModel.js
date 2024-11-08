@@ -28,7 +28,7 @@ const AudioQnAModel = sequelize.define('AudioQnA', {
   tableName: 'AudioQnAs',
 });
 
-// Establishing relationships
+
 AudioQnAModel.belongsTo(AudioProcessingModel, {
   foreignKey: 'audioProcessingId',
   as: 'audioProcessing',

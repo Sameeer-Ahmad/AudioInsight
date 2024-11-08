@@ -1,4 +1,3 @@
-// AudioQna.js
 import { useState, useEffect } from "react";
 import useSocket from "../../hooks/useSocket";
 import { Box, Text, Divider, VStack } from "@chakra-ui/react";

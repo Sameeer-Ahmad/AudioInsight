@@ -1,4 +1,3 @@
-// ModalComponent.jsx
 import {
   Modal,
   ModalOverlay,

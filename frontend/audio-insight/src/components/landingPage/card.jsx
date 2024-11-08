@@ -1,8 +1,6 @@
-import { Link } from "react-router-dom";
 import { CardBody, CardContainer, CardItem } from "../../utils/card-menu";
 import { Box } from "@chakra-ui/react";
 import { Image } from "react-bootstrap";
-// import 'animate.css';
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { QA, Summary, Transcribe } from "../../assets";
@@ -11,6 +9,7 @@ AOS.init();
 export function ThreeDCard() {
   return (
     <div>
+     
       <div
         className="flex flex-col md:flex-row items-center justify-around gap-0"
         data-aos="zoom-in"

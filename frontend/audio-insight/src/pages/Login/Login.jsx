@@ -13,9 +13,7 @@ export function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  // const {login} =useAuth()
  
-
   const handleSubmit = (e) => {
     e.preventDefault();
     const payload = {
@@ -31,7 +29,7 @@ export function Login() {
         localStorage.setItem("username", res.data.username);
         // console.log(res.data.accessToken);
         login(res.data.accessToken)
-        // navigate(from, { replace: true });
+       
         navigate("/dashboard");
       })
       .catch((err) => {

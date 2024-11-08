@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import  { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -82,12 +82,13 @@ const AudioUpload = () => {
                 Instructions:
               </FormLabel>
               <Text pt={4} pb={4} color="gray.400" fontSize="sm">
-                Click the "Choose File" button below to select an{" "}
-                <span style={{ color: "skyblue", fontWeight: "bold" }}>
-                  mp3
-                </span>{" "}
-                audio file from your device.
-              </Text>
+  Click the "Choose File" button below to select a{" "}
+  <span style={{ color: "skyblue", fontWeight: "bold" }}>
+    supported
+  </span>{" "}
+  audio file (e.g., MP3, WAV, M4A) from your device.
+</Text>
+
               {loading && (
                 <Progress
                   size="xs"
@@ -157,7 +158,6 @@ const AudioUpload = () => {
           </VStack>
         </form>
       </Box>
-      {/* AllCards component is now always visible */}
       <AllCards />
     </Box>
   );

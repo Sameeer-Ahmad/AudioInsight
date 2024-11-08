@@ -4,7 +4,7 @@ import axios from "axios";
 import { Button } from "@chakra-ui/react";
 import { API } from "../../backend-API/api";
 import { AuthContext } from "../../context/authContext";
-// import { useAuth } from "../../context/authContext";
+
 function Logout() {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext);

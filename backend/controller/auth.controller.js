@@ -1,11 +1,17 @@
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { Blacklist } = require("../model/blacklist.model");
 const { UserModel } = require("../model/user.model");
+const { Blacklist } = require("../model/blacklist.model");
 
 const signup = async (req, res) => {
   const { username, email, password } = req.body;
+  
+  if (!username || !email || !password) {
+    return res
+      .status(400)
+      .send({ msg: "Please provide username, email, and password" });
+  }
   try {
     const checkUser = await UserModel.findOne({ where: { email } });
     console.log(checkUser);
@@ -52,7 +58,7 @@ const login = async (req, res) => {
       { expiresIn: "12h" }
     );
 
-    return res.status(200).json({ message: "Login successful", accessToken ,username:user.username});
+    return res.status(200).json({ message: "Login successfull", accessToken ,username:user.username});
   } catch (err) {
     console.error("Login error:", err);
     return res.status(500).json({ error: "Internal Server Error" });

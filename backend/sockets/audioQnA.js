@@ -8,7 +8,6 @@ const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 module.exports = (io) => {
   io.on("connection", (socket) => {
     // console.log(`A user connected: ${socket.id}`);
-
     socket.on("sendMessage", (data) => {
       console.log("Message received",data);
       socket.emit("receiveMessage", "Message received!");
@@ -20,13 +19,10 @@ module.exports = (io) => {
           order: [["createdAt", "DESC"]],
         });
 
-        if (!latestAudio) {
-          return socket.emit("error", "No audio found");
-        }
-
         const transcription = latestAudio.transcription;
 
-        const prompt = `Based on the provided transcription "${transcription}", answer the following question and don't make answer much lengthy: "${question}"`;
+        const prompt = `Based on the transcription: "${transcription}", answer the following question concisely and only if relevant: "${question}". If the question isn't related to the transcription, respond with "The question is unrelated to the transcription."`;
+
 
 
         const result = await model.generateContent([prompt]);
@@ -38,7 +34,7 @@ module.exports = (io) => {
           answer,
         });
 
-        // Emit the answer back to the client
+        // Emiting the answer back to the client
         socket.emit("answer", { question, answer });
       } catch (error) {
         console.error("Error processing Q&A:", error);

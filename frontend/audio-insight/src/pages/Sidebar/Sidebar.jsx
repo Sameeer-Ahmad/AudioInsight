@@ -25,8 +25,8 @@ import Logout from "../Logout/Logout";
 
 const LinkItems = [
   { name: "Dashboard", icon: IoHomeSharp, path: "/dashboard" },
-  { name: "Transcriptions", icon: FaQuoteRight, path: "/transcribe" },
-  { name: "Summarizatons", icon: MdSummarize, path: "/summary" },
+  { name: "Transcription  ", icon: FaQuoteRight, path: "/transcribe" },
+  { name: "Summarization", icon: MdSummarize, path: "/summary" },
   { name: "Q&A", icon: MdQuestionAnswer, path: "/Qna" },
 ];
 

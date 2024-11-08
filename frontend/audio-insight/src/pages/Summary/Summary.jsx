@@ -9,10 +9,10 @@ import {  toast } from "react-hot-toast";
 
 
 const Summary = () => {
-  const [language, setLanguage] = useState("en"); // Default language
+  const [language, setLanguage] = useState("en"); 
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
-  // const toast = useToast();
+
 
   const handleLanguageChange = (e) => {
     setLanguage(e.target.value);
@@ -20,7 +20,7 @@ const Summary = () => {
 
   const handleSummarize = async () => {
     setLoading(true);
-    setSummary(""); // Clear the previous summary
+    setSummary(""); 
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
@@ -35,7 +35,7 @@ const Summary = () => {
       toast.success("Summary Retrieved", {
         duration: 3000,
         style: {
-          minWidth: "250px", // Customize the toast appearance
+          minWidth: "250px",
         },
       });
     } catch (error) {

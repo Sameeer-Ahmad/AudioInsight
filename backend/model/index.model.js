@@ -12,7 +12,6 @@ AudioProcessingModel.belongsTo(UserModel, { foreignKey: "userId" });
 
 
 AudioProcessingModel.hasMany(SummaryModel, {
-  // Define the relationship
   foreignKey: "audioProcessingId",
   onDelete: "CASCADE",
 });

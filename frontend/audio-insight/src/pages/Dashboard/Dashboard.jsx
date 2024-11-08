@@ -1,5 +1,3 @@
-// Dashboard.js
-import React from 'react';
 import Sidebar from '../Sidebar/Sidebar';
 import { Box, Flex } from '@chakra-ui/react';
 import { AudioUploadProvider } from '../../context/audioContext';

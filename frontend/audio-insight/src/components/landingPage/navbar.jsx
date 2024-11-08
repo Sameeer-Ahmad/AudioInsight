@@ -12,11 +12,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
   useDisclosure,
-  useColorMode,
-  Image,
-  Avatar,
 } from "@chakra-ui/react";
 import {
   HamburgerIcon,
@@ -24,9 +20,7 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
-import { ProjectName } from "./projectName";
 import FeatureModal from "./modelComponent";
 
 export default function Navbar() {
@@ -62,7 +56,6 @@ export default function Navbar() {
             _hover={{ bg: "none" }}
             bg={"none"}
             color={"white"}
-            // variant={"ghost"}
             aria-label={"Toggle Navigation"}
           />
         </Flex>
@@ -135,6 +128,7 @@ const DesktopNav = ({ onOpen }) => {
         <Box key={navItem.label}>
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
+             
               <Box
                 as="a"
                 p={2}
@@ -147,9 +141,10 @@ const DesktopNav = ({ onOpen }) => {
                 }}
               >
                 {navItem.label}
+              {navItem.popup}
               </Box>
             </PopoverTrigger>
-
+      
             {navItem.children && (
               <PopoverContent
                 borderWidth="0.2px"
@@ -307,6 +302,8 @@ const NAV_ITEMS = [
           "Create interactive Q&A sessions based on your audio content.",
         href: "#",
       },
+
+      
     ],
   },
 
@@ -317,5 +314,5 @@ const NAV_ITEMS = [
   {
     label: "About Us",
     href: "#",
-  },
+  },  
 ];

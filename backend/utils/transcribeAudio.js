@@ -1,7 +1,7 @@
 const { AssemblyAI } = require("assemblyai");
-
+require("dotenv").config();
 const client = new AssemblyAI({
-  apiKey: "853db12d0a474d7ab4538914edd2283d", 
+  apiKey: process.env.ASSEMBLY_API_KEY, 
 });
 
 const transcribeAudio = async (audioUrl) => {

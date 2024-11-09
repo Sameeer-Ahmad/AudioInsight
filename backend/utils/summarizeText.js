@@ -4,7 +4,7 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 
 const summarizeText = async (text, language) => {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const prompt = `Create a small well-summary in ${language} for the following text then in new line after the space in row add original length and summary length and text for summary length and original length only in bold:
+  const prompt = `Create a small well-summary in ${language} for the following text then in new line after the space in row add summary word count and original word count in bold:
   ${text}`;
 
   const result = await model.generateContent([prompt]);

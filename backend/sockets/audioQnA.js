@@ -21,9 +21,7 @@ module.exports = (io) => {
 
         const transcription = latestAudio.transcription;
 
-        const prompt = `Based on the transcription: "${transcription}", answer the following question concisely and only if relevant: "${question}". If the question isn't related to the transcription, respond with "The question is unrelated to the transcription."`;
-
-
+        const prompt = `Given the transcription: "${transcription}", please answer the following question: "${question}". If the question is directly related to the content of the transcription or the context around it, provide a concise and informative answer. If the question is not relevant to the transcription or audio context, respond with "The question is unrelated to the transcription."`;
 
         const result = await model.generateContent([prompt]);
         const answer = result.response.text();

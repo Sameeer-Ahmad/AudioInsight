@@ -53,37 +53,7 @@ const Card = ({ title, description, imageUrl, link }) => (
     </Box>
   </Flex>
 );
-/**
- * 
- <Flex direction="column" flex="1" pt={4}>
-      <Text color={"white"} fontWeight="bold" fontSize="lg" mb={4} pl={2}>
-        {title}
-      </Text>
-      <Text color={"white"} mb={4 } pl={2}>
-        {description}
-      </Text>
-      <Box
-        display="flex"
-        alignItems="center"
-        color="white"
-        // ml={1}
-        w={"fit-content"}
-        // bg="rgb(30, 50, 58)"
-        borderRadius="full"
-        pl={2}
-        pr={4}
-        pt={1}
-        pb={1}
-        cursor="pointer"
-        _hover={{ bg: "rgb(30, 40, 48)"  }}
-      >
-        <Text color="white" mr={2}>
-          Get Started
-        </Text>
-        <FaArrowRightLong />
-      </Box>
-    </Flex>
- */
+
 const CardList = ({ cards }) => (
   <Flex direction="column" gap="4">
     {cards.map((card, index) => (
@@ -93,34 +63,27 @@ const CardList = ({ cards }) => (
 );
 
 const AllCards = () => {
-  // Example data for cards
   const cards = [
     {
       title: "Transcribe",
       description: "Transcribe audio in real-time.",
       imageUrl:
         "https://www.kapwing.com/resources/content/images/2024/02/transcribe-audio-to-text.png",
-      link: "/transcribe", // Specify the route for each card
+      link: "/transcribe",
     },
     {
       title: "Summarize",
       description: "Summarize audio in real-time.",
       imageUrl:
         "https://www.shutterstock.com/image-vector/businessman-cartoon-on-paper-sheet-260nw-165416321.jpg",
-      link: "/summary", // Specify the route for each card
+      link: "/summary", 
     },
-    // {
-    //   title: "Diarize",
-    //   description: "Diarize audio in real-time.",
-    //   imageUrl: "https://img-c.udemycdn.com/course/750x422/4752864_afe0_2.jpg",
-    //   link: "/diarization", // Specify the route for each card
-    // },
     {
       title: "Q&A",
       description: "Answer questions in real-time.",
       imageUrl:
         "https://cdn.pixabay.com/photo/2017/07/19/16/44/questions-2519654_1280.png",
-      link: "/Qna", // Specify the route for each card
+      link: "/Qna", 
     },
   ];
 

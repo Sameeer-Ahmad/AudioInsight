@@ -1,4 +1,4 @@
-import  { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -57,7 +57,6 @@ const AudioUpload = () => {
       });
 
       console.log("File uploaded successfully", mediaFileUrl);
-      
     } catch (error) {
       console.error("Error uploading file:", error);
       toast.error("Failed to upload file.", {
@@ -74,7 +73,14 @@ const AudioUpload = () => {
         Welcome to Your Dashboard
       </h1>
       <h4 className="font-bold mb-4 text-white">Upload an Audio File</h4>
-      <Box maxW="md" mt={10} p={6} mb={10} borderRadius="lg" bg="rgb(40, 50, 58)">
+      <Box
+        maxW="md"
+        mt={10}
+        p={6}
+        mb={10}
+        borderRadius="lg"
+        bg="rgb(40, 50, 58)"
+      >
         <form onSubmit={handleSubmit}>
           <VStack spacing={4}>
             <FormControl id="file" isRequired>
@@ -82,12 +88,12 @@ const AudioUpload = () => {
                 Instructions:
               </FormLabel>
               <Text pt={4} pb={4} color="gray.400" fontSize="sm">
-  Click the "Choose File" button below to select a{" "}
-  <span style={{ color: "skyblue", fontWeight: "bold" }}>
-    supported
-  </span>{" "}
-  audio file (e.g., MP3, WAV, M4A) from your device.
-</Text>
+                Click the "Choose File" button below to select a{" "}
+                <span style={{ color: "skyblue", fontWeight: "bold" }}>
+                  supported
+                </span>{" "}
+                audio file (e.g., MP3, WAV, M4A) from your device.
+              </Text>
 
               {loading && (
                 <Progress

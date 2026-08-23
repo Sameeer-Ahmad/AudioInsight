@@ -1,8 +1,17 @@
 require("dotenv").config();
 const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize(process.env.DB_URL, {
+// mysql2 doesn't understand a `ssl-mode` query param (managed MySQL hosts
+// like Aiven put one in their connection string) — it just silently ignores
+// it and connects without SSL, which Aiven's free tier will then reject.
+// Read it ourselves and configure SSL properly via dialectOptions instead.
+const dbUrl = new URL(process.env.DB_URL);
+const requiresSSL = dbUrl.searchParams.get("ssl-mode") === "REQUIRED";
+dbUrl.searchParams.delete("ssl-mode");
+
+const sequelize = new Sequelize(dbUrl.toString(), {
   dialect: "mysql",
+  dialectOptions: requiresSSL ? { ssl: { rejectUnauthorized: false } } : {},
 });
 
 async function ConnectToDB() {

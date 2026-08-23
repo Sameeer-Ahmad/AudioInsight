@@ -96,7 +96,7 @@ function SidebarContent({ onClose, ...rest }) {
       <Flex direction="column" gap={8}>
         <Flex align="center" gap="10px" px={2} py={1}>
           <WaveformMark size={32} color={colors.accent} tint={colors.accentTint} />
-          <Text fontFamily={fonts.heading} fontWeight={600} fontSize="16px" letterSpacing="-0.01em">
+          <Text fontFamily={fonts.heading} fontWeight={600} fontSize="16px" letterSpacing="-0.01em" color={colors.textPrimary}>
             AudioInsight
           </Text>
           <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} ml="auto" />

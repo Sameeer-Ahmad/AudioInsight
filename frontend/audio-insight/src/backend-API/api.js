@@ -1,2 +1,3 @@
-export const API="https://audioinsight.up.railway.app";
+export const API =
+  import.meta.env.VITE_API_URL || "https://audioinsight.up.railway.app";
 

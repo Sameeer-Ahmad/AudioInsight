@@ -59,8 +59,8 @@ export default function Sidebar() {
           onOverlayClick={onClose}
           size="full"
         >
-          <DrawerContent>
-            <SidebarContent onClose={onClose} />
+          <DrawerContent bg={colors.bgSurface}>
+            <SidebarContent onClose={onClose} w="full" />
           </DrawerContent>
         </Drawer>
         <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />

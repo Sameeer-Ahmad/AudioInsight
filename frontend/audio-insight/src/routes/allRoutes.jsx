@@ -9,28 +9,33 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import AudioUpload from "../pages/upload/audioUpload";
 import Transcribe from "../pages/Transcribe/Transcribe";
 import Summary from "../pages/Summary/Summary";
+import Profile from "../pages/Profile/Profile";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "../context/authContext";
+import { AudioProvider } from "../context/audioContext";
 import PrivateRoutes from "../components/PrivateRoute";
 
 function AllRoutes() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Dashboard>
-          <Toaster />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route element={<PrivateRoutes />}>
-              <Route path="/dashboard" element={<AudioUpload />} />
-              <Route path="/transcribe" element={<Transcribe />} />
-              <Route path="/summary" element={<Summary />} />
-              <Route path="/Qna" element={<AudioQna />} />
-            </Route>
-          </Routes>
-        </Dashboard>
+        <AudioProvider>
+          <Dashboard>
+            <Toaster />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route element={<PrivateRoutes />}>
+                <Route path="/dashboard" element={<AudioUpload />} />
+                <Route path="/transcribe" element={<Transcribe />} />
+                <Route path="/summary" element={<Summary />} />
+                <Route path="/Qna" element={<AudioQna />} />
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+            </Routes>
+          </Dashboard>
+        </AudioProvider>
       </AuthProvider>
     </BrowserRouter>
   );

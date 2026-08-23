@@ -10,27 +10,17 @@ import {
   VisuallyHidden,
   Input,
   IconButton,
-  useColorModeValue,
 } from "@chakra-ui/react";
 
 import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { BiMailSend } from "react-icons/bi";
-
-const Logo = () => {
-  return (
-    <img
-      src="https://i.ibb.co/7JtfWw2/audio-insight-logo.png"
-      alt="audio insight"
-      width="60px"
-      height="60px"
-    />
-  );
-};
+import WaveformMark from "./WaveformMark";
+import { colors, fonts } from "../theme/tokens";
 
 const SocialButton = ({ children, label, href }) => {
   return (
     <chakra.button
-      bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
+      bg={colors.bgSurface2}
       rounded={"full"}
       w={8}
       h={8}
@@ -40,9 +30,10 @@ const SocialButton = ({ children, label, href }) => {
       display={"inline-flex"}
       alignItems={"center"}
       justifyContent={"center"}
+      color={colors.textTertiary}
       transition={"background 0.3s ease"}
       _hover={{
-        bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+        bg: colors.bgSurface3,
       }}
     >
       <VisuallyHidden>{label}</VisuallyHidden>
@@ -53,7 +44,7 @@ const SocialButton = ({ children, label, href }) => {
 
 const ListHeader = ({ children }) => {
   return (
-    <Text fontWeight={"500"} fontSize={"lg"} mb={2}>
+    <Text fontWeight={600} fontSize={"14px"} color={colors.textPrimary} mb={2}>
       {children}
     </Text>
   );
@@ -61,32 +52,35 @@ const ListHeader = ({ children }) => {
 
 export default function Footer() {
   return (
-    <Box bg={"#171923"} color={"white"} >
+    <Box bg={colors.bgSurface} color={colors.textTertiary} borderTop={`1px solid ${colors.border}`}>
       <Container as={Stack} maxW={"6xl"} py={10}>
         <SimpleGrid
           templateColumns={{ sm: "1fr 1fr", md: "2fr 1fr 1fr 2fr" }}
           spacing={8}
         >
           <Stack spacing={6}>
-            <Box>
-              <Logo color={useColorModeValue("gray.700", "white")} />
+            <Box display="flex" alignItems="center" gap="10px">
+              <WaveformMark size={28} color={colors.accent} tint={colors.accentTint} radius="8px" />
+              <Text fontFamily={fonts.heading} fontWeight={600} fontSize="15px" color={colors.textPrimary}>
+                AudioInsight
+              </Text>
             </Box>
-            <Text fontSize={"sm"}>
-              © 2024 Audio Insight. All rights reserved
+            <Text fontSize={"13px"}>
+              © 2026 AudioInsight. All rights reserved.
             </Text>
-            <Stack direction={"row"} spacing={6}>
+            <Stack direction={"row"} spacing={4}>
               <SocialButton label={"Twitter"} href={"#"}>
-                <FaTwitter />
+                <FaTwitter size={14} />
               </SocialButton>
               <SocialButton label={"YouTube"} href={"#"}>
-                <FaYoutube />
+                <FaYoutube size={14} />
               </SocialButton>
               <SocialButton label={"Instagram"} href={"#"}>
-                <FaInstagram />
+                <FaInstagram size={14} />
               </SocialButton>
             </Stack>
           </Stack>
-          <Stack align={"flex-start"}>
+          <Stack align={"flex-start"} fontSize="13.5px" spacing={3}>
             <ListHeader>Company</ListHeader>
             <Box as="a" href={"#"}>
               About us
@@ -97,14 +91,8 @@ export default function Footer() {
             <Box as="a" href={"#"}>
               Contact us
             </Box>
-            <Box as="a" href={"#"}>
-              Pricing
-            </Box>
-            <Box as="a" href={"#"}>
-              Testimonials
-            </Box>
           </Stack>
-          <Stack align={"flex-start"}>
+          <Stack align={"flex-start"} fontSize="13.5px" spacing={3}>
             <ListHeader>Support</ListHeader>
             <Box as="a" href={"#"}>
               Help Center
@@ -113,13 +101,7 @@ export default function Footer() {
               Terms of Service
             </Box>
             <Box as="a" href={"#"}>
-              Legal
-            </Box>
-            <Box as="a" href={"#"}>
               Privacy Policy
-            </Box>
-            <Box as="a" href={"#"}>
-              Satus
             </Box>
           </Stack>
           <Stack align={"flex-start"}>
@@ -127,16 +109,19 @@ export default function Footer() {
             <Stack direction={"row"}>
               <Input
                 placeholder={"Your email address"}
-                bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
-                border={"1px solid "}
+                bg={colors.bgSurface2}
+                border={`1px solid ${colors.border}`}
+                fontSize="13.5px"
+                _placeholder={{ color: colors.textDim }}
                 _focus={{
-                  bg: "whiteAlpha.300",
+                  bg: colors.bgSurface3,
+                  borderColor: colors.accent,
                 }}
               />
               <IconButton
-                color={useColorModeValue("white", "gray.800")}
-                bg={"#881337"}
-                _hover={{ bg: "#4c0519" }}
+                color={colors.accentOn}
+                bg={colors.accent}
+                _hover={{ bg: colors.accentStrong }}
                 aria-label="Subscribe"
                 icon={<BiMailSend />}
               />

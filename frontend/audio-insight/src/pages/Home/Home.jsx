@@ -1,22 +1,27 @@
-import React from 'react'
-import Navbar from '../../components/landingPage/navbar'
-import { ProjectName } from '../../components/landingPage/projectName'
-import { MovingCard } from '../../components/landingPage/movingCard'
-import Footer from '../../components/footer'
-import { ThreeDCard } from '../../components/landingPage/card'
-import { Box } from '@chakra-ui/react'
+import Navbar from "../../components/landingPage/navbar";
+import Hero from "../../components/landingPage/Hero";
+import HowItWorks from "../../components/landingPage/HowItWorks";
+import Features from "../../components/landingPage/Features";
+import { MovingCard } from "../../components/landingPage/movingCard";
+import FAQ from "../../components/landingPage/FAQ";
+import FinalCTA from "../../components/landingPage/FinalCTA";
+import Footer from "../../components/footer";
+import { Box } from "@chakra-ui/react";
+import { colors } from "../../theme/tokens";
 
 function Home() {
   return (
-    <Box bg={"rgb(17,21,24)"}>
-      <Navbar/>
-      <ProjectName/>
-      <ThreeDCard/>
-      <MovingCard/>
-      <Footer/>
+    <Box bg={colors.bgCanvas}>
+      <Navbar />
+      <Hero />
+      <HowItWorks />
+      <Features />
+      <MovingCard />
+      <FAQ />
+      <FinalCTA />
+      <Footer />
     </Box>
-  )
+  );
 }
 
-export default Home
-Home
+export default Home;

@@ -1,44 +1,43 @@
-import React, { useState } from "react";
-import { Box, Flex, Text, Select, Skeleton } from "@chakra-ui/react";
+import { useContext, useEffect, useState } from "react";
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { IconAlignLeft, IconPlayerPlay } from "@tabler/icons-react";
 import axios from "axios";
-import { API } from "../../backend-API/api";
-import ButtonGradient from "../../utils/button-gradient/buttonGradient";
-import { MdArrowDropDown } from "react-icons/md";
 import { toast } from "react-hot-toast";
+import { API } from "../../backend-API/api";
+import { AudioContext } from "../../context/audioContext";
+import LanguageSelect from "../../components/LanguageSelect";
+import PrimaryButton from "../../components/PrimaryButton";
+import ResultPanel from "../../components/ResultPanel";
+import EmptyState from "../../components/EmptyState";
+import { colors, fonts } from "../../theme/tokens";
+
 const Transcribe = () => {
-  const [language, setLanguage] = useState("en"); 
+  const { activeAudioId } = useContext(AudioContext);
+  const [language, setLanguage] = useState("en");
   const [transcription, setTranscription] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLanguageChange = (e) => {
-    setLanguage(e.target.value);
-  };
+  useEffect(() => {
+    setTranscription("");
+  }, [activeAudioId]);
 
   const handleTranscribe = async () => {
+    if (!activeAudioId) return;
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
       setTranscription("");
       const response = await axios.get(
-        `${API}/audio/transcribe?language=${language}`,
+        `${API}/audio/transcribe?language=${language}&audioId=${activeAudioId}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       setTranscription(response.data.transcription);
-      toast.success("Transcription Retrieved", {
-        duration: 3000,
-        style: {
-          minWidth: "250px",
-        },
-      });
+      toast.success("Transcription retrieved", { duration: 3000 });
     } catch (error) {
       console.error("Error fetching transcription:", error);
-      toast.error("Failed to retrieve transcription.", {
-        duration: 3000,
-      });
+      toast.error("Failed to retrieve transcription.", { duration: 3000 });
     } finally {
       setLoading(false);
     }
@@ -46,81 +45,40 @@ const Transcribe = () => {
 
   return (
     <Box>
-      <Box mb={12}>
-        <Text fontSize="2xl" fontWeight="bold" color="white">
-          Transcribe Audio
+      <Box mb={8}>
+        <Text fontFamily={fonts.heading} fontSize="26px" fontWeight={600} letterSpacing="-0.01em" color={colors.textPrimary}>
+          Transcription
         </Text>
-        <Text fontSize="md" color="gray.200" mt={2}>
-          Welcome to our audio transcription service. You can transcribe audio
-          files into text in multiple languages. Select the desired language
-          from the dropdown below and click on the "Transcribe" button to get
-          started.
+        <Text fontSize="14px" color={colors.textMuted} mt={1}>
+          Turn your audio into accurate, readable text — translated into any language.
         </Text>
       </Box>
-      <Box>
-        <Flex color="white" gap={8} mb={20}>
-          <Select
-            id="language"
-            value={language}
-            maxW={"200px"}
-            icon={<MdArrowDropDown />}
-            onChange={handleLanguageChange}
-            variant="outline"
-            color="black"
-            fontWeight={"bold"}
-            fontSize={"lg"}
-            bg="#e11d48"
-            _hover={{
-              borderColor: "gray.400",
-            }}
-            _focus={{
-              borderColor: "blue.500",
-              boxShadow: "outline",
-            }}
-            _active={{
-              borderColor: "blue.500",
-            }}
-          >
-            <option value="en">English</option>
-            <option value="hi">Hindi</option>
-            <option value="fr">French</option>
-            <option value="es">Spanish</option>
-            <option value="de">German</option>
-            <option value="it">Italian</option>
-            <option value="ja">Japanese</option>
-            <option value="ko">Korean</option>
-            <option value="pt">Portuguese</option>
-            <option value="ru">Russian</option>
-            <option value="zh">Chinese</option>
-            <option value="ar">Arabic</option>
-            <option value="nl">Dutch</option>
-            <option value="tr">Turkish</option>
-            <option value="pl">Polish</option>
-          </Select>
 
-          <ButtonGradient isLoading={loading} onClick={handleTranscribe}>
-            Transcribe
-          </ButtonGradient>
-        </Flex>
-        {transcription && (
-          <Box bg="rgb(40, 50, 58)" p={4} borderRadius="lg" mt={4}>
-            <Text color="white" fontWeight="bold"  mb={4} fontSize="2xl">
-              Transcription :
-            </Text>
+      {!activeAudioId && (
+        <EmptyState>No audio selected. Upload an audio file from the dashboard first.</EmptyState>
+      )}
 
-            <Text pl={2} fontSize="lg" fontWeight="semi-bold" color="white">
-              {transcription}
-            </Text>
-          </Box>
-        )}
-        {loading && (
-          <Box bg="rgb(40, 50, 58)" p={4} borderRadius="lg" mt={4}>
-            <Skeleton height="20px" my={4} />
-            <Skeleton height="20px" my={4} />
-            <Skeleton height="20px" my={4} />
-          </Box>
-        )}
-      </Box>
+      <Flex align="flex-end" gap="14px" mb={8}>
+        <LanguageSelect value={language} onChange={(e) => setLanguage(e.target.value)} />
+        <PrimaryButton
+          leftIcon={<IconPlayerPlay size={16} />}
+          isLoading={loading}
+          loadingText="Transcribing"
+          onClick={handleTranscribe}
+          isDisabled={!activeAudioId}
+        >
+          Transcribe
+        </PrimaryButton>
+      </Flex>
+
+      <ResultPanel
+        icon={IconAlignLeft}
+        title="Transcript"
+        meta={language.toUpperCase()}
+        content={transcription}
+        loading={loading}
+        fileName="transcript.txt"
+      />
     </Box>
   );
 };

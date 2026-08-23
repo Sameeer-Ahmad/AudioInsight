@@ -6,23 +6,27 @@ import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
   fonts: {
-    body: "Poppins, sans-serif",
-    heading: "Poppins, sans-serif",
+    body: "'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif",
+    heading: "'Space Grotesk', 'Manrope', ui-sans-serif, system-ui, sans-serif",
   },
   styles: {
     global: {
-      ".active-link": {
-        backgroundColor: 'rgb(40, 50, 58)',
-        color: 'white',
+      body: {
+        background: "oklch(16% 0.006 264)",
       },
     },
-    components: {
-      NavItem: {
-        // Define base styles for NavItem component if needed
-        baseStyle: {
-          // Base styles for NavItem
+  },
+  components: {
+    Button: {
+      // Chakra's default ghost variant uses a light gray hover/active
+      // background (tuned for light mode), which makes near-white icon/text
+      // colors on this dark theme briefly invisible when clicked or hovered.
+      // whiteAlpha tokens always lighten relative to a dark background instead.
+      variants: {
+        ghost: {
+          _hover: { bg: "whiteAlpha.100" },
+          _active: { bg: "whiteAlpha.200" },
         },
-        // More specific variants if needed
       },
     },
   },

@@ -1,14 +1,27 @@
+import { Box, Text } from "@chakra-ui/react";
 import { InfiniteMovingCards } from "../../utils/infinite-moving-cards";
+import { colors, fonts } from "../../theme/tokens";
 
 export function MovingCard() {
   return (
-    <div className="h-[20rem] rounded-md flex flex-col antialiased bg-rgb(17,21,24) dark:bg-[#171923] dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden hidden sm:hidden md:hidden lg:flex">
-      <InfiniteMovingCards
-        items={testimonials}
-        direction="right"
-        speed="slow"
-      />
-    </div>
+    <Box bg={colors.bgCanvas} pb={{ base: 16, md: 24 }} display={{ base: "none", lg: "block" }}>
+      <Text
+        fontFamily={fonts.heading}
+        fontSize={{ base: "26px", md: "32px" }}
+        fontWeight={600}
+        letterSpacing="-0.01em"
+        color={colors.textPrimary}
+        textAlign="center"
+        mb={10}
+      >
+        What people are saying
+      </Text>
+      <Box
+        className="h-[20rem] rounded-md flex flex-col antialiased items-center justify-center relative overflow-hidden"
+      >
+        <InfiniteMovingCards items={testimonials} direction="right" speed="slow" />
+      </Box>
+    </Box>
   );
 }
 

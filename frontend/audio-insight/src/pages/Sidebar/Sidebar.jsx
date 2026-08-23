@@ -3,31 +3,36 @@ import {
   Flex,
   Text,
   IconButton,
-  useColorModeValue,
   CloseButton,
   Drawer,
   DrawerContent,
   useDisclosure,
-  Icon,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  Button,
 } from "@chakra-ui/react";
 
-import { FiChevronDown, FiMenu } from "react-icons/fi";
-import { IoHomeSharp } from "react-icons/io5";
-import { MdQuestionAnswer, MdSummarize } from "react-icons/md";
-import { FaQuoteRight } from "react-icons/fa";
+import {
+  IconMenu2,
+  IconHome,
+  IconAlignLeft,
+  IconAlignCenter,
+  IconMessageCircle,
+  IconChevronDown,
+  IconUser,
+  IconLogout,
+} from "@tabler/icons-react";
 import { NavLink, useLocation } from "react-router-dom";
-import Logout from "../Logout/Logout";
+import { useLogout } from "../Logout/Logout";
+import WaveformMark from "../../components/WaveformMark";
+import { colors, fonts } from "../../theme/tokens";
 
 const LinkItems = [
-  { name: "Dashboard", icon: IoHomeSharp, path: "/dashboard" },
-  { name: "Transcription  ", icon: FaQuoteRight, path: "/transcribe" },
-  { name: "Summarization", icon: MdSummarize, path: "/summary" },
-  { name: "Q&A", icon: MdQuestionAnswer, path: "/Qna" },
+  { name: "Dashboard", icon: IconHome, path: "/dashboard" },
+  { name: "Transcription", icon: IconAlignLeft, path: "/transcribe" },
+  { name: "Summarization", icon: IconAlignCenter, path: "/summary" },
+  { name: "Q&A", icon: IconMessageCircle, path: "/Qna" },
 ];
 
 export default function Sidebar() {
@@ -35,14 +40,17 @@ export default function Sidebar() {
   const location = useLocation();
   const hideSidebarPaths = ["/login", "/signup", "/"];
   const shouldHideSidebar = hideSidebarPaths.includes(location.pathname);
-  
+
   return (
     !shouldHideSidebar && (
-      <Box minH="100vh" bg={"rgb(17,21,24)"} color={"white"}>
-        <SidebarContent
-          onClose={onClose}
-          display={{ base: "none", md: "block" }}
-        />
+      <Box
+        w={{ base: "full", md: "264px" }}
+        flexShrink={0}
+        minH={{ base: "auto", md: "100vh" }}
+        bg={colors.bgCanvas}
+        color={colors.textPrimary}
+      >
+        <SidebarContent onClose={onClose} display={{ base: "none", md: "flex" }} />
         <Drawer
           isOpen={isOpen}
           placement="left"
@@ -56,136 +64,151 @@ export default function Sidebar() {
           </DrawerContent>
         </Drawer>
         <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-        <Box ml={{ base: 0, md: 80 }} p="4"></Box>
       </Box>
     )
   );
 }
 
 function SidebarContent({ onClose, ...rest }) {
-  const username = localStorage.getItem("username");
+  const username = localStorage.getItem("username") || "Your account";
+  const handleLogout = useLogout();
+
+  const initials = username
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
-    <Box
-      bg={"rgb(17,21,24)"}
-      borderRight="1px"
-      color={"white"}
-      borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 80 }}
+    <Flex
+      direction="column"
+      justify="space-between"
+      bg={colors.bgSurface}
+      borderRight={`1px solid ${colors.border}`}
+      w={{ base: "full", md: "264px" }}
       pos="fixed"
-      h="full"
+      h="100vh"
+      py={6}
+      px={4}
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <img
-          src="https://i.ibb.co/7JtfWw2/audio-insight-logo.png"
-          alt="AI Logo"
-          width="50px"
-          height="50px"
-          overflow={"hidden"}
-        />
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Audio Insight
-        </Text>
+      <Flex direction="column" gap={8}>
+        <Flex align="center" gap="10px" px={2} py={1}>
+          <WaveformMark size={32} color={colors.accent} tint={colors.accentTint} />
+          <Text fontFamily={fonts.heading} fontWeight={600} fontSize="16px" letterSpacing="-0.01em">
+            AudioInsight
+          </Text>
+          <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} ml="auto" />
+        </Flex>
 
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
+        <Flex direction="column" gap="2px">
+          {LinkItems.map((link) => (
+            <NavItem key={link.name} to={link.path} icon={link.icon} onClose={onClose}>
+              {link.name}
+            </NavItem>
+          ))}
+        </Flex>
       </Flex>
 
-      {LinkItems.map((link) => (
-        <NavItem key={link.name} to={link.path} icon={link.icon} onClose={onClose}>
-          {link.name}
-        </NavItem>
-      ))}
-
-      <Menu>
-        <MenuButton
-          as={Button}
-          rightIcon={<Icon as={FiChevronDown} />}
-          mt={4}
-          bg="none"
-          color="white"
-          _hover={{ bg: "rgb(50, 60, 68)" }}
-          _expanded={{ bg: "rgb(50, 60, 68)" }}
-          w="90%"
-          ml="5%"
-        >
-          {username}
-        </MenuButton>
-        <MenuList p={2} bg="rgb(17, 21, 24)" color="white" mt={2}>
-          <MenuItem
-            pl={4}
-            borderRadius={"0.5rem"}
-            _hover={{ bg: "rgb(40, 50, 58)" }}
-            bg="rgb(17, 21, 24)"
+      <Flex direction="column" gap={2}>
+        <Box h="1px" bg={colors.border} mb={1} />
+        <Menu>
+          <MenuButton
+            display="flex"
+            alignItems="center"
+            gap="10px"
+            px="10px"
+            py="8px"
+            borderRadius="12px"
+            _hover={{ bg: colors.bgSurface2 }}
+            _expanded={{ bg: colors.bgSurface2 }}
+            w="full"
+            textAlign="left"
           >
-            Profile
-          </MenuItem>
-          <MenuItem
-            pl={4}
-            borderRadius={"0.5rem"}
-            _hover={{ bg: "rgb(40, 50, 58)" }}
-            bg="rgb(17, 21, 24)"
-          >
-            Settings
-          </MenuItem>
-          <MenuItem
-            borderRadius={"0.5rem"}
-            _hover={{ bg: "rgb(40, 50, 58)" }}
-            bg="rgb(17, 21, 24)"
-          >
-            <Logout />
-          </MenuItem>
-        </MenuList>
-      </Menu>
-    </Box>
+            <Flex align="center" gap="10px">
+              <Flex
+                w="32px"
+                h="32px"
+                borderRadius="50%"
+                bg={colors.accent2Tint}
+                align="center"
+                justify="center"
+                flexShrink={0}
+              >
+                <Text fontFamily={fonts.heading} fontSize="12px" fontWeight={600} color={colors.accent2}>
+                  {initials || "?"}
+                </Text>
+              </Flex>
+              <Flex direction="column" minW={0} flex={1}>
+                <Text
+                  fontSize="13px"
+                  fontWeight={600}
+                  color={colors.textPrimary}
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                >
+                  {username}
+                </Text>
+              </Flex>
+              <IconChevronDown size={16} color={colors.textFaint} style={{ flexShrink: 0 }} />
+            </Flex>
+          </MenuButton>
+          <MenuList bg={colors.bgSurface} borderColor={colors.border} p={2} mt={2}>
+            <MenuItem
+              as={NavLink}
+              to="/profile"
+              onClick={onClose}
+              icon={<IconUser size={16} />}
+              borderRadius="8px"
+              bg={colors.bgSurface}
+              color={colors.textSecondary}
+              _hover={{ bg: colors.bgSurface2 }}
+            >
+              Profile
+            </MenuItem>
+            <MenuItem
+              icon={<IconLogout size={16} />}
+              onClick={handleLogout}
+              borderRadius="8px"
+              bg={colors.bgSurface}
+              color={colors.textSecondary}
+              _hover={{ bg: colors.bgSurface2 }}
+            >
+              Logout
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
+    </Flex>
   );
 }
 
-function NavItem({ icon, children, to, onClose, ...rest }) {
+function NavItem({ icon: Icon, children, to, onClose }) {
   return (
-    <NavLink
-      to={to}
-      style={({ isActive }) => ({
-        backgroundColor: isActive ? "rgb(40, 50, 58)" : "rgb(17,21,24)",
-        color: "white",
-        textDecoration: "none",
-        display: "block",
-        width: "90%",
-        margin: "10px auto",
-        borderRadius: "0.5rem",
-      })}
-      onClick={onClose}
-    >
-      <Box
-        _focus={{ boxShadow: "none" }}
-        _hover={{
-          bg: "rgb(40, 50, 58)",
-          color: "white",
-          borderRadius: "0.5rem",
-        }}
-        {...rest}
-      >
+    <NavLink to={to} onClick={onClose} style={{ textDecoration: "none" }}>
+      {({ isActive }) => (
         <Flex
           align="center"
-          p="4"
-          mx="4"
-          borderRadius="lg"
-          role="group"
-          cursor="pointer"
+          gap="12px"
+          px="14px"
+          py="10px"
+          mx={0}
+          borderRadius="10px"
+          bg={isActive ? colors.accentTint : "transparent"}
+          _hover={{ bg: isActive ? colors.accentTint : colors.bgSurface2 }}
         >
-          {icon && (
-            <Icon
-              mr="4"
-              fontSize="16"
-              _groupHover={{
-                color: "white",
-              }}
-              as={icon}
-            />
-          )}
-          {children}
+          <Icon size={19} color={isActive ? colors.accent : colors.textFaint} style={{ flexShrink: 0 }} />
+          <Text
+            fontSize="14px"
+            fontWeight={isActive ? 600 : 500}
+            color={isActive ? colors.textPrimary : colors.textTertiary}
+          >
+            {children}
+          </Text>
         </Flex>
-      </Box>
+      )}
     </NavLink>
   );
 }
@@ -193,30 +216,31 @@ function NavItem({ icon, children, to, onClose, ...rest }) {
 function MobileNav({ onOpen, ...rest }) {
   return (
     <Flex
-      ml={{ base: 0, md: 80 }}
-      px={{ base: 4, md: 24 }}
+      w="full"
+      px={4}
       height="20"
       alignItems="center"
-      bg={"rgb(17,21,24)"}
-      borderBottomColor={useColorModeValue("gray.200", "gray.700")}
+      bg={colors.bgSurface}
+      borderBottom={`1px solid ${colors.border}`}
       justifyContent="flex-start"
+      gap={3}
       {...rest}
     >
       <IconButton
         variant="outline"
         onClick={onOpen}
         aria-label="open menu"
-        icon={<FiMenu />}
-        color={"white"}
-        _hover={{ bg: "rgb(40,50,58)" }}
+        icon={<IconMenu2 size={18} />}
+        color={colors.textPrimary}
+        borderColor={colors.border}
+        _hover={{ bg: colors.bgSurface2 }}
       />
-      <img
-        src="https://i.ibb.co/7JtfWw2/audio-insight-logo.png"
-        alt="AI Logo"
-        width="50px"
-        height="50px"
-        overflow={"hidden"}
-      />
+      <Flex align="center" gap="8px">
+        <WaveformMark size={26} color={colors.accent} tint={colors.accentTint} radius="7px" gap="2px" />
+        <Text fontFamily={fonts.heading} fontWeight={600} fontSize="15px" color={colors.textPrimary}>
+          AudioInsight
+        </Text>
+      </Flex>
     </Flex>
   );
 }

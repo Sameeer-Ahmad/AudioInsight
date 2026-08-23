@@ -1,5 +1,4 @@
 // index.model.js
-const { sequelize } = require("../config/db");
 const { UserModel } = require("./user.model");
 const { SummaryModel } = require("./summary.model");
 const { AudioProcessingModel } = require("./audioProcessing.model");
@@ -20,9 +19,10 @@ SummaryModel.belongsTo(AudioProcessingModel, {
 });
 
 
-sequelize.sync({ force: false }).then(() => {
-  console.log("Database & tables created!");
-});
+// Sequelize sync (and table creation) already happens once, in order, in
+// config/db.js's ConnectToDB() after authenticate() succeeds. A second,
+// unawaited sync() here raced it and could crash the process on an
+// unhandled rejection if the DB wasn't ready yet at require time.
 
 module.exports = {
   UserModel,

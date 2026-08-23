@@ -1,6 +1,11 @@
 const express = require("express");
 const latestRouter = express.Router();
-const { audioUpload } = require("../controller/AudioProcessing.controller");
+const {
+  audioUpload,
+  getHistory,
+  getAudioDetail,
+  deleteAudio,
+} = require("../controller/AudioProcessing.controller");
 const {
   transcribe,
   summarize,
@@ -13,6 +18,9 @@ const transcribeRouter = express.Router();
 const summarizeRouter = express.Router();
 
 audioRouter.post("/upload", upload, audioUpload);
+audioRouter.get("/history", getHistory);
+audioRouter.get("/detail/:id", getAudioDetail);
+audioRouter.delete("/detail/:id", deleteAudio);
 
 transcribeRouter.get("/transcribe", transcribe);
 

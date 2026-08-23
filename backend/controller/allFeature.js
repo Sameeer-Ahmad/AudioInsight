@@ -10,26 +10,27 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 
 const transcribe = async (req, res) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const { language } = req.query;
-    const latestAudio = await AudioProcessingModel.findOne({
-      where: {
-        userId: req.user.id,
-      },
-      order: [["createdAt", "DESC"]],
+    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+    const { language, audioId } = req.query;
+
+    if (!audioId) {
+      return res.status(400).json({ message: "audioId is required" });
+    }
+
+    const audio = await AudioProcessingModel.findOne({
+      where: { id: audioId, userId: req.user.id },
     });
 
-   console.log("latestAudio",latestAudio.mediaFileUrl);
+    if (!audio) {
+      return res.status(404).json({ message: "Audio not found" });
+    }
 
-   if (!latestAudio.mediaFileUrl) {
-    return res.status(404).json({ message: "No mediaFile found" });
-  }
-
-    let prompt = `Translate the following transcription to ${language}: "${latestAudio.transcription}"`;
+    let prompt = `Translate the following transcription to ${language}. If it contains "Speaker X:" labels, keep those labels as-is (translate only the surrounding text) and keep each speaker's turn on its own line.\n\n"${audio.transcription}"`;
 
     const result = await model.generateContent([prompt]);
     const transcription = result.response.text()
-      .replace(/(\r\n|\n|\r|\\)/gm, " ")
+      .replace(/\r\n/g, "\n")
+      .replace(/[ \t]+/g, " ")
       .trim();
 
     return res.status(200).json({ transcription });
@@ -41,15 +42,21 @@ const transcribe = async (req, res) => {
 
 const summarize = async (req, res) => {
   try {
-    const { language } = req.query; 
-    const latestAudio = await AudioProcessingModel.findOne({
-      where: {
-        userId: req.user.id,
-      },
-      order: [["createdAt", "DESC"]],
+    const { language, audioId } = req.query;
+
+    if (!audioId) {
+      return res.status(400).json({ error: "audioId is required" });
+    }
+
+    const audio = await AudioProcessingModel.findOne({
+      where: { id: audioId, userId: req.user.id },
     });
 
-    const transcription = latestAudio.transcription;
+    if (!audio) {
+      return res.status(404).json({ error: "Audio not found" });
+    }
+
+    const transcription = audio.transcription;
 
     if (!transcription) {
       return res.status(404).json({ error: "transcription not found" });
@@ -58,7 +65,7 @@ const summarize = async (req, res) => {
 
     // Store the summary and its language in the database
     const newSummary = await SummaryModel.create({
-      audioProcessingId: latestAudio.id,
+      audioProcessingId: audio.id,
       summary,
       language,
     });

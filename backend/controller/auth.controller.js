@@ -80,8 +80,44 @@ const logout = async (req, res) => {
   }
 };
 
+const getProfile = async (req, res) => {
+  return res.status(200).json({
+    id: req.user.id,
+    username: req.user.username,
+    email: req.user.email,
+  });
+};
+
+const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: "Current and new password are required" });
+  }
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: "New password must be at least 6 characters" });
+  }
+
+  try {
+    const isMatch = await bcrypt.compare(currentPassword, req.user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+
+    req.user.password = await bcrypt.hash(newPassword, 10);
+    await req.user.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Change password error:", err);
+    return res.status(500).json({ error: "Unable to update password" });
+  }
+};
+
 module.exports = {
   signup,
   login,
   logout,
+  getProfile,
+  changePassword,
 };

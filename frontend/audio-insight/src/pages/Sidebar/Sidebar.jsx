@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Box,
   Flex,
@@ -7,6 +8,7 @@ import {
   Drawer,
   DrawerContent,
   useDisclosure,
+  useBreakpointValue,
   Menu,
   MenuButton,
   MenuList,
@@ -40,6 +42,13 @@ export default function Sidebar() {
   const location = useLocation();
   const hideSidebarPaths = ["/login", "/signup", "/"];
   const shouldHideSidebar = hideSidebarPaths.includes(location.pathname);
+
+  const isDesktop = useBreakpointValue({ base: false, md: true });
+  useEffect(() => {
+    if (isDesktop && isOpen) {
+      onClose();
+    }
+  }, [isDesktop, isOpen, onClose]);
 
   return (
     !shouldHideSidebar && (

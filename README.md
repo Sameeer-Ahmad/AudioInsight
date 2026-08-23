@@ -1,40 +1,101 @@
 # AudioInsight
 
-**AudioInsight** is a platform that allows users to upload audio in any format and receive:
-- **Real-time Transcriptions** in different languages.
-- **Audio Summarization** in various languages.
-- **Interactive Q&A** where users can ask questions related to the uploaded audio and get answers.
+**AudioInsight** lets you upload audio in any common format and get:
+- **Transcription** — accurate, readable text, with speakers automatically labeled ("Speaker A / Speaker B / ...") when more than one voice is detected.
+- **Summarization** — a concise summary of the audio.
+- **Audio Q&A** — ask questions about an uploaded recording and get answers grounded in its transcript, in real time over WebSockets.
+
+All three can be translated into any of 15 supported languages.
 
 ## Live Links
 
-- **Frontend**: [Frontend Link](https://audio-insight.vercel.app/)
-- **Backend**: [Backend Link](https://audioinsight.up.railway.app/)
+- **Frontend**: [audio-insight.vercel.app](https://audio-insight.vercel.app/)
+- **Backend**: not currently deployed — the previous Railway deployment and its database were retired. See [Deployment](#deployment) below.
 
 ## Features
 
-- **Audio Upload**: Supports a variety of audio file formats such as MP3, WAV, OGG, etc.
-- **Language Transcription**: Transcribes audio into multiple languages.
-- **Audio Summarization**: Provides concise summaries of the uploaded audio.
-- **Q&A Interaction**: Users can ask questions related to the audio content, and the AI will provide answers.
+- **Audio upload** — drag-and-drop or file picker, MP3/WAV/M4A/OGG/WEBM/AAC/FLAC/AIFF/WMA/MP4, up to 200MB.
+- **Upload history** — every past upload is listed and selectable as the "active audio" that Transcribe/Summary/Q&A operate on.
+- **Transcription & translation** with automatic speaker diarization.
+- **Summarization** with word-count stats.
+- **Audio Q&A** — persisted per audio, answers grounded in that recording's transcript.
+- **Audio playback** with a seek bar, alongside the transcript/summary/Q&A views.
+- **Accounts** — signup/login, profile page, change password.
+- **Delete uploads** you no longer need.
 
 ## Tech Stack
 
 ### Frontend
-- **React**: For building the dynamic user interface.
-- **Chakra UI**: A component library for React to build modern, accessible, and fast user interfaces.
-- **Aeternity UI**: A UI component library used to create sleek and responsive interfaces for the platform.
+- **React** + **Vite**
+- **Chakra UI** for components, with a custom dark theme (`frontend/audio-insight/src/theme/tokens.js`)
+- **Tabler Icons**
+- **Socket.IO client** for the Q&A page
 
 ### Backend
-- **Node.js**: JavaScript runtime for building the backend server.
-- **Express**: A web framework to handle HTTP requests.
-- **MySQL**: Relational database for storing user data, audio files, transcriptions, and summaries.
-- **Socket.IO**: Enables real-time communication for Q&A.
-- **Gemini AI**: Used for generating transcriptions and summaries in multiple languages and AI-based Q&A interactions.
-- **AssemblyAI**: Handles accurate audio transcription for the platform.
+- **Node.js** + **Express**
+- **MySQL** via **Sequelize**
+- **Socket.IO** for real-time Q&A
+- **Gemini API** for translation, summarization, and Q&A
+- **AssemblyAI** for transcription and speaker diarization
+- **Cloudinary** for audio file storage
+
+## Local Development
+
+### 1. Database
+
+A local MySQL instance is provided via Docker:
+
+```bash
+docker compose up -d
+```
+
+This starts MySQL on `localhost:3306` (database `audioinsight`, user/password `root`/`root`). The backend creates its tables automatically on first run.
+
+### 2. Backend
+
+```bash
+cd backend
+npm install
+cp .env.example .env   # then fill in the values (see below)
+npm run server          # nodemon, or `npm start` for a plain run
+```
+
+`.env` requires:
+- `DB_URL` — set to `mysql://root:root@127.0.0.1:3306/audioinsight` for the Docker database above, or your own MySQL connection string
+- `JWT_SECRET` — any random string
+- `CLOUD_NAME`, `CLOUD_API_KEY`, `CLOUD_API_SECRET` — from a [Cloudinary](https://cloudinary.com) account
+- `GOOGLE_GEMINI_API_KEY` — from [Google AI Studio](https://aistudio.google.com/apikey)
+- `ASSEMBLY_API_KEY` — from [AssemblyAI](https://www.assemblyai.com/)
+- `FRONTEND_URL` — only required in production (see below); local dev accepts any `localhost` origin automatically
+
+`.env` is gitignored — never commit real credentials to this file.
+
+### 3. Frontend
+
+```bash
+cd frontend/audio-insight
+npm install
+npm run start
+```
+
+By default the frontend talks to the deployed backend URL. To point it at your local backend instead, create `frontend/audio-insight/.env.local`:
+
+```
+VITE_API_URL=http://localhost:3002
+```
+
+(matching whatever `PORT` you set in the backend's `.env`).
+
+## Deployment
+
+- **Frontend**: deployed on Vercel.
+- **Backend**: needs a Node host (e.g. Railway or Render) plus a managed MySQL database — the local Docker database above is for development only. Whichever host you use, set the backend's environment variables from `.env.example`, and set `FRONTEND_URL` to your deployed frontend's exact URL (no trailing slash) — CORS and the Q&A WebSocket both depend on it matching exactly.
 
 ## Usage
 
-1. **Upload Audio**: Start by uploading an audio file on the platform. Click on the "Choose File" button to select the audio from your device.
-2. **Transcription**: After uploading, navigate to the **Transcribe** page where you can generate transcriptions of the audio in multiple languages.
-3. **Summarization**: Next, head to the **Summarize** page where you can get summaries of the uploaded audio in different languages.
-4. **Audio Q&A**: Then visit the **Audio Q&A** page to ask questions related to the audio. The AI will provide responses based on the content of the uploaded audio.
+1. **Sign up / log in.**
+2. **Upload audio** from the Dashboard — it becomes your active audio automatically.
+3. **Transcribe** — pick a language and generate a transcript (with speaker labels, if applicable).
+4. **Summarize** — generate a concise summary in any language.
+5. **Q&A** — ask questions about the active audio and get transcript-grounded answers.
+6. Switch the active audio anytime via the "Active audio" bar, or manage/delete past uploads from the Dashboard.
